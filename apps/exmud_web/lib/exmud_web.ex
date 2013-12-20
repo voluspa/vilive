@@ -17,8 +17,8 @@ defmodule ExmudWeb do
     ], &maybe_start/1)
 
     dispatch = :cowboy_router.compile([
-      {"_", [
-        {"/static", :cowboy_static, {:priv_dir, :exmud_web, "static"}}
+      {:_, [
+        {"/static/[...]", :cowboy_static, {:priv_dir, :exmud_web, "static"}}
       ]}
     ])
 
