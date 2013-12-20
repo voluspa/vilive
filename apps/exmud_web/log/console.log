@@ -1,0 +1,4 @@
+2013-12-20 15:40:21.174 [info] <0.7.0> Application lager started on node nonode@nohost
+2013-12-20 15:40:21.174 [info] <0.7.0> Application cowlib started on node nonode@nohost
+2013-12-20 15:40:21.178 [info] <0.7.0> Application ranch started on node nonode@nohost
+2013-12-20 15:40:21.182 [info] <0.7.0> Application cowboy started on node nonode@nohost
