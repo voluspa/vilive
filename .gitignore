@@ -2,3 +2,5 @@ _build
 tags
 deps
 log
+bower_components
+node_modules

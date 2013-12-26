@@ -7,4 +7,4 @@ start:
 	iex --erl "-config exmud.config" -S mix
 
 tags:
-	ctags -R apps deps
+	ctags --exclude=priv -R apps deps

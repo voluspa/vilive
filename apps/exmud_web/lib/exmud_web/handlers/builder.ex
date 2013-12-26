@@ -1,8 +1,7 @@
-defmodule Exmud.Handlers.Builder do
+defmodule ExmudWeb.Handlers.Builder do
   @behaviour :cowboy_http_handler
 
   def init(_type, req, _opts) do
-    :lager.alskdj "woah i got initialized"
     {:ok, req, :undefined_state}
   end
 
