@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>World Builder</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/vendor/bootswatch/flatly/bootstrap.css">
+
+    <!-- fileblock:css styles -->
+    <!-- endfileblock -->
+</head>
+<body>
+
+    <!-- vendor libraries need to be manually added to testem grunt task config -->
+    <script src="/vendor/jquery/jquery.js"></script>
+    <script src="/vendor/handlebars/handlebars.js"></script>
+    <script src="/vendor/ember/ember.js"></script>
+    <script src="/vendor/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/vendor/loader.js"></script>
+    <script src="/vendor/ember-resolver/dist/ember-resolver.js"></script>
+
+    <!-- fileblock:js app -->
+    <!-- endfileblock -->
+
+    <script>
+        window.App = require('app/application')['default'].create();
+    </script>
+</body>
+</html>

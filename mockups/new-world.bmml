@@ -1,0 +1,35 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="920" measuredH="548" mockupW="860" mockupH="528">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="60" y="20" w="860" h="528" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>World%20Builder%0Ahttp%3A//dirtie/builder</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="60" y="92" w="860" h="35" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Button" x="852" y="96" w="-1" h="-1" measuredW="68" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>adding-first-room%26bm%3Badding-first-room.bmml%26bm%3Badding-first-room.bmml%26bm%3Badding-first-room.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22792%2C76%2C860%2C103%22%20href%3D%22adding-first-room.bmml%22%20alt%3D%22adding-first-room%22%20id%3D%222%22/%3E</map>
+        <text>+%20Room</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::TextArea" x="271" y="204" w="439" h="191" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <backgroundAlpha>1</backgroundAlpha>
+        <borderColor>16777215</borderColor>
+        <state>up</state>
+        <text>Ready%20to%20play%20god%3F%0A%20%0A-%20Click%20%27+Room%27%20above%20to%20start%20building%20your%20world%20one%20box%20at%20a%20time.%0A-%20Click%20and%20Drag%20the%20world%20to%20move%20around.%0A-%20Scroll%20to%20zoom%20in%20and%20out.%0A-%20Find%20a%20room%20by%20searching%20for%20it%20by%20title%20or%20ID.%0A-%20Hover%20over%20an%20existing%20room%20to%20see%20it%27s%20title.%20%0A-%20Click%20a%20room%20to%20select%20it%20for%20editing%20or%20deletion.%0A-%20When%20editing%20a%20room%2C%20you%20can%20add%20exits%20to%20connect%20the%20selected%20room%20to%20new%20or%20existing%20rooms%20in%20your%20virtual%20world.%0A-%20Click%20a%20path%20between%20rooms%20to%20edit%20or%20delete%20the%20exit.</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::SearchBox" x="66" y="97" w="205" h="-1" measuredW="120" measuredH="25" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>find%20room</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::StickyNote" x="114" y="328" w="169" h="162" measuredW="109" measuredH="123" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Main%20thing%20is%20display%20some%20basic%20help%20info%20when%20this%20thing%20is%20mature.%20The%20example%20text%20lists%20some%20features%20I%27m%20shooting%20for.</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
