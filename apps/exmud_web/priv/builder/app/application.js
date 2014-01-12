@@ -1,5 +1,3 @@
-"use strict";
-
 import Resolver from 'resolver';
 
 var App = Ember.Application.extend({

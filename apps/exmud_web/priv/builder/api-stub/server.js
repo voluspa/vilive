@@ -18,13 +18,18 @@ app.use(express.urlencoded());
 
 app.use(require("connect-livereload")());
 
+// api stubs
+app.namespace('/api', function () {
+    app.get('/rooms', function (req, res) {
+        res.send({
+            rooms: []
+        });
+    });
+});
+
 app.use(static_file({ urlRoot: '/vendor', directory: 'vendor' }));
 app.use(static_file({ urlRoot: '/assets', directory: '_build/assets' }));
 app.use(static_file({ urlRoot: '/builder', file: '_build/index.html' }));
-
-// api stubs
-app.namespace('/api', function () {
-});
 
 app.listen(port);
 console.log('started on ' + port);

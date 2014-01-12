@@ -3,7 +3,5 @@
         "$",
         "Ember"
     ],
-    "strict": true,
-    "globalstrict": true,
     "esnext": true
 }

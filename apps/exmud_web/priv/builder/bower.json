@@ -16,8 +16,9 @@
   ],
   "dependencies": {
     "ember": "~1.3.0",
-    "bootswatch": "~3.0.3+1",
-    "ember-resolver": "git://github.com/stefanpenner/ember-jj-abrams-resolver.git#master"
+    "bootswatch": "~3.0.3",
+    "ember-resolver": "git://github.com/stefanpenner/ember-jj-abrams-resolver.git#master",
+    "ember-data": "1.0.0-beta.4"
   },
   "devDependencies": {
     "ember-mocha-adapter": "~0.1.2"

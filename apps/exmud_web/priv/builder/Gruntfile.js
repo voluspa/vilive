@@ -1,12 +1,12 @@
-var path = require('path');
-
-var lockFile = require('lockfile');
-
 module.exports = function(grunt) {
 "use strict";
 
+    var path = require('path');
+
+    var lockFile = require('lockfile');
+
     grunt.initConfig({
-        clean: ['_build'],
+        clean: ['_build', '.connect.lock'],
         watch: {
             options: {
                 spawn: false,
@@ -28,8 +28,8 @@ module.exports = function(grunt) {
                     'jshint',
                     'transpile',
                     'fileblocks:dev',
-                    'testem:ci:dev',
-                    'unlock'
+                    'unlock',
+                    'testem:ci:dev'
                 ]
             },
             styles: {
@@ -46,8 +46,8 @@ module.exports = function(grunt) {
                 tasks: [
                     'lock',
                     'emberTemplates:dev',
-                    'testem:ci:dev',
-                    'unlock'
+                    'unlock',
+                    'testem:ci:dev'
                 ]
             }
         },
@@ -64,6 +64,7 @@ module.exports = function(grunt) {
                     'vendor/jquery/jquery.js',
                     'vendor/handlebars/handlebars.js',
                     'vendor/ember/ember.js',
+                    'vendor/ember-data/ember-data.js',
                     'vendor/ember-mocha-adapter/adapter.js',
                     'vendor/loader.js',
                     'vendor/ember-resolver/dist/ember-resolver.js',
@@ -77,7 +78,7 @@ module.exports = function(grunt) {
                     debug: true,
                     framework: 'mocha+chai',
                     parallel: 4,
-                    launch_in_dev: ['PhantomJS'],
+                    launch_in_dev: ['Safari'],
                     launch_in_ci: ['PhantomJS']
                 }
             }
@@ -174,6 +175,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('build:dev', [
+        'clean',
         'jsbeautifier',
         'jshint',
         'less:dev',

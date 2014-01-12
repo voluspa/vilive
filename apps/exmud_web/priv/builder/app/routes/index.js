@@ -1,8 +1,6 @@
-"use strict";
-
 export
 default Ember.Route.extend({
     beforeModel: function() {
-        this.transitionTo('rooms');
+        this.transitionTo('room');
     }
 });

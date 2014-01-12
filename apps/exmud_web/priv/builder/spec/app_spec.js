@@ -6,14 +6,15 @@
 
 var expect = chai.expect;
 
-describe('mocha with ember testing', function() {
-    "use strict";
+describe('when no rooms exist', function() {
 
     beforeEach(function() {
+        setFixtures('room', []);
         visit('/');
     });
 
-    afterEach(function() {
-        App.reset();
+    it('displays help information', function() {
+        expect(find('.help'))
+            .to.have.length(1);
     });
 });
