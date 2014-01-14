@@ -15,6 +15,7 @@ module.exports = function(grunt) {
             index: {
                 files: ['app/index.html'],
                 task: [
+                    'unlock',
                     'lock',
                     'fileblocks:dev',
                     'unlock'
@@ -23,6 +24,7 @@ module.exports = function(grunt) {
             js: {
                 files: ['app/**/*.js', 'spec/**/*.js'],
                 tasks: [
+                    'unlock',
                     'lock',
                     'jsbeautifier',
                     'jshint',
@@ -35,6 +37,7 @@ module.exports = function(grunt) {
             styles: {
                 files: ['app/styles/**/*.less'],
                 tasks: [
+                    'unlock',
                     'lock', 
                     'less:dev',
                     'fileblocks:dev',
@@ -44,6 +47,7 @@ module.exports = function(grunt) {
             templates: {
                 files: ['app/templates/**/*.hbs'],
                 tasks: [
+                    'unlock',
                     'lock',
                     'emberTemplates:dev',
                     'unlock',

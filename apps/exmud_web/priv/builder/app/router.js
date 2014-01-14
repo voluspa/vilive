@@ -4,7 +4,9 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-    this.resource("room", function() {});
+    this.resource('room', function() {
+        this.route('new');
+    });
 });
 
 export

@@ -1,6 +1,15 @@
+{{#if displayHelp}}
 <div class="help container jumbotron">
     <p>Read to play god?</p>
     <ul>
         <li>Click '+ Room' above to your world one room at a time.</li>
     </ul>
+</div>
+{{else}}
+<svg class="world">
+
+</svg>
+{{/if}}
+<div class="details-panel">
+{{outlet}}
 </div>

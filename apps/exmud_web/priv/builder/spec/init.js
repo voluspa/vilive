@@ -22,3 +22,7 @@ window.App = require('app/application')['default'].create();
 App.rootElement = '#ember-test-fixture';
 App.setupForTesting();
 App.injectTestHelpers();
+
+afterEach(function() {
+    App.reset();
+});
