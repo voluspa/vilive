@@ -1,0 +1,21 @@
+{
+  "name": "vilive-client",
+  "version": "0.0.0",
+  "homepage": "https://github.com/voluspa/vilive",
+  "authors": [
+    "Stephen Gowan <gowansg@gmail.com>"
+  ],
+  "description": "A graphical MUD client",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ember.js": "~1.3.1"
+  }
+}
