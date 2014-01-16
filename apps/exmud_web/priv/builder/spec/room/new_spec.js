@@ -22,11 +22,16 @@ describe('creating a new room', function() {
     }
 
     beforeEach(function() {
-        visit('/room/new');
+        visit('/rooms/new');
     });
 
     it('displays a blank form', function() {
         expect(findForm()).to.be.not.empty;
+    });
+
+    it('has a space for the id', function() {
+        var id = findInForm('#roomId')[0];
+        expect(id).to.be.ok;
     });
 
     it('has a title input', function() {
@@ -42,6 +47,8 @@ describe('creating a new room', function() {
 
     describe('when canceling', function() {
         beforeEach(function() {
+            fillIn('#roomTitle', 'A cold creepy cave');
+            fillIn('#roomDescription', "It's so creepy.");
             click('[name=cancel]');
         });
 
@@ -51,7 +58,7 @@ describe('creating a new room', function() {
 
         describe('creating a new room afterwards', function() {
             beforeEach(function() {
-                visit('/room/new');
+                visit('/rooms/new');
             });
 
             it('cleared all the fields', function() {
@@ -62,6 +69,19 @@ describe('creating a new room', function() {
                 expect(roomDescription).to.be.an.instanceof(HTMLTextAreaElement);
                 expect(roomDescription.value).to.be.empty;
             });
+        });
+    });
+
+    describe('when saving', function() {
+        beforeEach(function() {
+            fillIn('#roomTitle', 'A cold creepy cave');
+            fillIn('#roomDescription', "It's so creepy.");
+            click('[name=save]');
+        });
+
+        it('displays the room id', function() {
+            var id = findInForm('#roomId')[0];
+            expect(id.textContent).to.be.not.eql("");
         });
     });
 });

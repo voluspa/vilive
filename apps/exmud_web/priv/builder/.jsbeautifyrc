@@ -1,3 +1,5 @@
 {
-    "break_chained_methods": true
+    "break_chained_methods": true,
+    "keep_function_indentation": true,
+    "keep_array_indentation": true
 }

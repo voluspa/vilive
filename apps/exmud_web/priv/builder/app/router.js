@@ -6,8 +6,8 @@ var Router = Ember.Router.extend({
 Router.map(function() {
     this.route('world');
 
-    this.route('room.new', {
-        path: '/room/new'
+    this.route('rooms.new', {
+        path: '/rooms/new'
     });
 
     this.resource('room', {

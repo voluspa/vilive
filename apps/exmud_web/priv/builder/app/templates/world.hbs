@@ -8,7 +8,7 @@
 {{else}}
 <ul>
     {{#each}}
-        <li>{{title}}</li>
+    <li>{{#link-to 'room' id}}{{title}}{{/link-to}}</li>
     {{/each}}
 </ul>
 {{/if}}
