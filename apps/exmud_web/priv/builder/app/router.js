@@ -4,7 +4,10 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-    this.resource('room', function() {
+    this.resource('room', {
+        path: '/room/:room_id'
+    });
+    this.resource('rooms', function() {
         this.route('new');
     });
 });

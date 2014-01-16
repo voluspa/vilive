@@ -20,9 +20,22 @@ app.use(require("connect-livereload")());
 
 // api stubs
 app.namespace('/api', function () {
+    var nextId = 1;
+    var rooms = [];
+
     app.get('/rooms', function (req, res) {
         res.send({
-            rooms: []
+            rooms: rooms
+        });
+    });
+
+    app.post('/rooms', function (req, res) {
+        var room = req.body.room;
+        room.id = nextId++;
+
+        rooms.push(room);
+        res.send({
+            room: room
         });
     });
 });

@@ -1,6 +1,6 @@
 export
 default Ember.Route.extend({
     model: function() {
-        return this.store.find('room');
+        return this.store.filter('room');
     }
 });

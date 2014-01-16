@@ -23,6 +23,8 @@ App.rootElement = '#ember-test-fixture';
 App.setupForTesting();
 App.injectTestHelpers();
 
+window.expect = chai.expect;
+
 afterEach(function() {
     App.reset();
 });

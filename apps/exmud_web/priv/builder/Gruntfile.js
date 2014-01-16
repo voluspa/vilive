@@ -98,10 +98,18 @@ module.exports = function(grunt) {
             }
         },
         jsbeautifier: {
-            options: {
-                config: '.jsbeautifyrc'
+            app: {
+                src: ['app/**/*.js'],
+                options: {
+                    config: '.jsbeautifyrc'
+                }
             },
-            src: ['app/**/*.js', 'spec/**/*.js']
+            spec: {
+                src: ['spec/**/*.js'],
+                options: {
+                    config: 'spec/.jsbeautifyrc'
+                }
+            }
         },
         less: {
             dev: {
