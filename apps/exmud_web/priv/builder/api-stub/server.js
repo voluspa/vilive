@@ -29,6 +29,16 @@ app.namespace('/api', function () {
         });
     });
 
+    app.get('/rooms/:id', function (req, res) {
+        var room = rooms.filter(function (r) {
+            return r.id == req.params.id;
+        })[0];
+
+        res.send({
+            room: room
+        });
+    });
+
     app.post('/rooms', function (req, res) {
         var room = req.body.room;
         room.id = nextId++;

@@ -13,32 +13,55 @@ describe('creating a new room', function() {
         return true;
     }
 
+    function findForm() {
+        return find('form.room');
+    }
+
+    function findInForm(selector) {
+        return find(selector, findForm());
+    }
+
     beforeEach(function() {
-        visit('/rooms/new');
+        visit('/room/new');
     });
 
     it('displays a blank form', function() {
-        expect(find('#new-room')).to.be.not.empty;
+        expect(findForm()).to.be.not.empty;
     });
 
     it('has a title input', function() {
-        var roomTitle = find('#roomTitle')[0];
+        var roomTitle = findInForm('#roomTitle')[0];
         expect(roomTitle).to.satisfy(emptyInput);
     });
 
     it('has a description input', function() {
-        var roomDescription = find('#roomDescription')[0];
+        var roomDescription = findInForm('#roomDescription')[0];
         expect(roomDescription).to.be.an.instanceof(HTMLTextAreaElement);
         expect(roomDescription.value).to.be.empty;
     });
 
     describe('when canceling', function() {
         beforeEach(function() {
-            click('[name=cancel]', find('#new-room'));
+            click('[name=cancel]');
         });
 
         it('removes the form', function() {
-            expect(find('#new-room').length).to.be.eql(0);
+            expect(findForm().length).to.be.eql(0);
+        });
+
+        describe('creating a new room afterwards', function() {
+            beforeEach(function() {
+                visit('/room/new');
+            });
+
+            it('cleared all the fields', function() {
+                var roomTitle = findInForm('#roomTitle')[0];
+                expect(roomTitle).to.satisfy(emptyInput);
+
+                var roomDescription = findInForm('#roomDescription')[0];
+                expect(roomDescription).to.be.an.instanceof(HTMLTextAreaElement);
+                expect(roomDescription.value).to.be.empty;
+            });
         });
     });
 });

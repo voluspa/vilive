@@ -6,7 +6,9 @@
     </ul>
 </div>
 {{else}}
-<svg class="world">
-
-</svg>
+<ul>
+    {{#each}}
+        <li>{{title}}</li>
+    {{/each}}
+</ul>
 {{/if}}
