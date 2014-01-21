@@ -6,9 +6,5 @@
     </ul>
 </div>
 {{else}}
-<ul>
-    {{#each}}
-    <li>{{#link-to 'room' id}}{{title}}{{/link-to}}</li>
-    {{/each}}
-</ul>
+{{view 'worldviewer'}}
 {{/if}}
