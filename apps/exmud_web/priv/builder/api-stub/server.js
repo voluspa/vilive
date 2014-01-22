@@ -24,8 +24,26 @@ app.namespace('/api', function () {
     var rooms = [];
 
     app.get('/rooms', function (req, res) {
+        var filtered = rooms,
+            queryKeys = Object.keys(req.query);
+
+        if (queryKeys.length > 0) {
+            filtered = rooms.filter(function (room) {
+                for(var i = 0; i < queryKeys.length; i++) {
+                    var key = queryKeys[i],
+                        value = req.query[key];
+
+                    if (room[key] != value) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
         res.send({
-            rooms: rooms
+            rooms: filtered
         });
     });
 

@@ -4,7 +4,8 @@ default Ember.Route.extend({
         return this.store.filter('room');
     },
 
-    setupController: function(controller) {
+    setupController: function(controller, model) {
+        controller.set('model', model);
         controller.send('reset');
     }
 });

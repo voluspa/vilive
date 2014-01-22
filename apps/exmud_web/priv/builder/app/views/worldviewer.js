@@ -2,6 +2,106 @@
 // have the view create/retrieve one and use it instead of all this inline crap
 var gfx = null;
 
+function buildGfx() {
+    if (gfx) return gfx;
+
+    var width = window.innerWidth,
+        height = window.innerHeight - $('header').outerHeight(true);
+
+    var renderer = new THREE.WebGLRenderer(),
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000),
+        scene = new THREE.Scene(),
+        controls = new THREE.OrbitControls(camera, renderer.domElement),
+        ambient = new THREE.AmbientLight(0x404040),
+        top = new THREE.DirectionalLight(0xaaaaaa),
+        bottom = new THREE.DirectionalLight(0x777777);
+
+    var axis = new THREE.AxisHelper(100);
+    axis.position.set(0, 0, 0);
+    scene.add(axis);
+
+    renderer.setSize(width, height);
+    renderer.setClearColor(0xffffff, 1);
+
+    camera.position.set(0, 0, 500);
+    scene.add(camera);
+
+    ambient.position.set(0, 0, 10000);
+    scene.add(ambient);
+
+    top.position.set(1, 1, 1);
+    scene.add(top);
+
+    bottom.position.set(-1, -1, -1);
+    scene.add(bottom);
+
+    var shadowGeometry = new THREE.CubeGeometry(30, 30, 30);
+    var shadowMaterial = new THREE.MeshBasicMaterial({
+        color: 0x22bb22,
+        opacity: 0.5,
+        transparent: true
+    });
+
+    var shadowCube = new THREE.Mesh(shadowGeometry, shadowMaterial);
+    shadowCube.visible = false;
+    scene.add(shadowCube);
+
+    var cube = {
+        shadow: shadowCube,
+        geometry: new THREE.CubeGeometry(30, 30, 30),
+        material: new THREE.MeshLambertMaterial({
+            emissive: 0x22ff22
+        })
+    };
+
+    var rollOverGeometry = new THREE.CubeGeometry(50, 50, 50);
+    var rollOverMaterial = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        opacity: 0.5,
+        transparent: true
+    });
+    var rollOverMesh = new THREE.Mesh(rollOverGeometry, rollOverMaterial);
+    rollOverMesh.position.set(0, 0, 10000);
+    scene.add(rollOverMesh);
+
+    var plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000),
+        new THREE.MeshBasicMaterial({
+            color: 0x444444,
+            opacity: 0.15,
+            transparent: true
+        }));
+    //plane.visible = false;
+    //plane.rotation.x = Math.PI / 2;
+    plane.position.set(0, 0, 0);
+    scene.add(plane);
+
+    gfx = {
+        pickingLocation: false,
+        location: null,
+        renderer: renderer,
+        camera: camera,
+        scene: scene,
+        controls: controls,
+        projector: new THREE.Projector(),
+        cube: cube,
+        rollOver: rollOverMesh,
+        plane: plane,
+        light: {
+            ambient: ambient,
+            top: top,
+            bottom: bottom
+        },
+        mouse2d: new THREE.Vector3(0, 10000, 0.5),
+        normalMatrix: new THREE.Matrix3(),
+        modelsToCubes: {},
+        cubesToModels: {}
+    };
+
+
+    animate();
+    render();
+}
+
 function getRealIntersector(intersects) {
     var intersector;
 
@@ -18,6 +118,9 @@ function getRealIntersector(intersects) {
 }
 
 function calculateGridPosition(intersector) {
+    if (!intersector.object) return;
+    if (!intersector.face || !intersector.face.normal) return;
+
     var matrixWorld = intersector.object.matrixWorld;
 
     gfx.normalMatrix.getNormalMatrix(matrixWorld);
@@ -29,8 +132,8 @@ function calculateGridPosition(intersector) {
     pos.addVectors(intersector.point, vec);
 
     pos.x = Math.floor(pos.x / 50) * 50;
-    pos.y = Math.floor(pos.y / 50) * 50 + 15;
-    pos.z = Math.floor(pos.z / 50) * 50;
+    pos.y = Math.floor(pos.y / 50) * 50;
+    pos.z = Math.floor(pos.z / 50) * 50 + 15;
 
     return pos;
 }
@@ -60,8 +163,10 @@ function render(timestamp) {
 
             if (intersector) {
                 var pos = calculateGridPosition(intersector);
-                gfx.rollOver.position = pos;
-                gfx.cube.shadow.position = pos;
+                if (pos) {
+                    gfx.rollOver.position = pos;
+                    gfx.cube.shadow.position = pos;
+                }
             }
         }
     }
@@ -73,149 +178,39 @@ export
 default Ember.View.extend({
     classNames: ['world-viewer'],
 
+    init: function() {
+        buildGfx();
+
+        gfx.pickingLocation = this.get('picking');
+        gfx.location = this.get('controller').get('lastLocation');
+
+        this._super();
+    },
+
     didInsertElement: function() {
         var self = this,
             $el = $(this.get('element'));
 
         this.set('$el', $el);
 
-        this.get('controller')
-            .get('model')
-            .addArrayObserver({
-                arrayWillChange: function(rooms, start, removeCount, addCount) {
-                    if (removeCount === 0) return;
+        this.set('windowResizeListener', this.resize.bind(this));
+        $(window).on('resize', this.get('windowResizeListener'));
 
-                    var deleted = rooms.slice(start, removeCount);
-                    deleted.forEach(function(room) {
-                        self.removeCube(room);
-                    });
-                },
+        $el.append(gfx.renderer.domElement);
 
-                arrayDidChange: function(rooms, start, removeCount, addCount) {
-                    if (addCount === 0) return;
+        this.set('controlsChangeListener', this.viewChanged.bind(this));
+        gfx.controls.addEventListener('change', this.get('controlsChangeListener'));
 
-                    var added = rooms.slice(start, addCount);
-                    added.forEach(function(room) {
-                        self.addCube(room);
-                    });
-                }
-            });
+        this.resize();
+    },
 
-        //only initialize once
-        if (gfx) {
-            gfx.pickingLocation = this.get('picking');
-            gfx.location = this.get('controller').get('lastLocation');
-            $el.append(gfx.renderer.domElement);
-            //new element new controls
-            gfx.controls = new THREE.OrbitControls(gfx.camera, $el[0]);
-            gfx.controls.addEventListener('change', function() {
-                self.set('selecting', false);
-            });
-            this.resize();
-            return;
-        }
+    willDestroyElement: function() {
+        $(window).off('resize', this.get('windowResizeListener'));
+        gfx.controls.removeEventListener('change', this.get('controlsChangeListener'));
+    },
 
-        var width = $el.innerWidth(),
-            height = window.innerHeight - $('header').outerHeight(true);
-
-        var renderer = new THREE.WebGLRenderer(),
-            camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000),
-            scene = new THREE.Scene(),
-            controls = new THREE.OrbitControls(camera, $el[0]),
-            ambient = new THREE.AmbientLight(0x404040),
-            top = new THREE.DirectionalLight(0xaaaaaa),
-            bottom = new THREE.DirectionalLight(0x777777);
-
-        var axis = new THREE.AxisHelper(100);
-        scene.add(axis);
-
-        renderer.setSize(width, height);
-        renderer.setClearColor(0xffffff, 1);
-
-        camera.position.set(150, 200, 375);
-        scene.add(camera);
-
-        ambient.position.set(0, 0, 1000);
-        scene.add(ambient);
-
-        top.position.set(1, 1, 1);
-        scene.add(top);
-
-        bottom.position.set(-1, -1, -1);
-        scene.add(bottom);
-
-        var shadowGeometry = new THREE.CubeGeometry(30, 30, 30);
-        var shadowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x22bb22,
-            opacity: 0.5,
-            transparent: true
-        });
-
-        var shadowCube = new THREE.Mesh(shadowGeometry, shadowMaterial);
-        shadowCube.visible = false;
-        scene.add(shadowCube);
-
-        var cube = {
-            shadow: shadowCube,
-            geometry: new THREE.CubeGeometry(30, 30, 30),
-            material: new THREE.MeshLambertMaterial({
-                emissive: 0x22ff22
-            })
-        };
-
-        var rollOverGeometry = new THREE.CubeGeometry(50, 50, 50);
-        var rollOverMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff0000,
-            opacity: 0.5,
-            transparent: true
-        });
-        var rollOverMesh = new THREE.Mesh(rollOverGeometry, rollOverMaterial);
-        rollOverMesh.position.set(0, 0, 10000);
-        scene.add(rollOverMesh);
-
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000),
-            new THREE.MeshBasicMaterial({
-                color: 0x444444,
-                opacity: 0.15,
-                transparent: true
-            }));
-        //plane.visible = false;
-        plane.rotation.x = -Math.PI / 2;
-        plane.position.set(0, 0, 0);
-        scene.add(plane);
-
-        gfx = {
-            pickingLocation: this.get('picking'),
-            location: this.get('controller').get('lastLocation'),
-            renderer: renderer,
-            camera: camera,
-            scene: scene,
-            controls: controls,
-            projector: new THREE.Projector(),
-            cube: cube,
-            rollOver: rollOverMesh,
-            plane: plane,
-            light: {
-                ambient: ambient,
-                top: top,
-                bottom: bottom
-            },
-            mouse2d: new THREE.Vector3(0, 10000, 0.5),
-            normalMatrix: new THREE.Matrix3()
-        };
-
-        $el.append(renderer.domElement);
-
-        gfx.controls.addEventListener('change', function() {
-            self.set('selecting', false);
-        });
-
-        $(window).on('resize', function(e) {
-            self.resize();
-        });
-
-        animate();
-        render();
+    viewChanged: function() {
+        this.set('selecting', false);
     },
 
     addCube: function(model) {
@@ -223,7 +218,7 @@ default Ember.View.extend({
         if (c) return;
 
         c = new THREE.Mesh(gfx.cube.geometry, gfx.cube.material);
-        c.position.set(50 * model.get('x'), (50 * model.get('y')) + 15, 50 * model.get('z'));
+        c.position.set(50 * model.get('x'), 50 * model.get('y'), (50 * model.get('z')) + 15);
         gfx.scene.add(c);
 
         gfx.modelsToCubes[model] = c;
@@ -238,6 +233,16 @@ default Ember.View.extend({
         delete gfx.modelsToCubes[model];
         delete gfx.cubesToModels[c];
     },
+
+    renderCubes: function() {
+        var self = this,
+            rooms = this.get('controller')
+                .get('model');
+
+        rooms.forEach(function(room) {
+            self.addCube(room);
+        });
+    }.observes('controller.model').on('init'),
 
     mouseMove: function(e) {
         var $el = this.get('$el');
@@ -256,8 +261,8 @@ default Ember.View.extend({
         if (!this.get('selecting')) return;
 
         this.set('selecting', false);
-        var grid = new THREE.Vector3(gfx.rollOver.position.x / 50, (gfx.rollOver.position.y - 15) / 50,
-            gfx.rollOver.position.x / 50);
+        var grid = new THREE.Vector3(gfx.rollOver.position.x / 50,
+            gfx.rollOver.position.y / 50, (gfx.rollOver.position.z - 15) / 50);
 
         var controller = this.get('controller');
 
@@ -265,9 +270,16 @@ default Ember.View.extend({
             gfx.location = gfx.rollOver.position;
             controller.send('setLocation', grid);
         } else {
-            controller.store.find('room', 1).then(function(d) {
-                controller.transitionToRoute('room', d);
-            });
+            controller.store
+                .find('room', {
+                    x: grid.x,
+                    y: grid.y,
+                    z: grid.z
+                })
+                .then(function(d) {
+                    if (d.content.length !== 1) return;
+                    controller.transitionToRoute('room', d.content[0]);
+                });
         }
     },
 
