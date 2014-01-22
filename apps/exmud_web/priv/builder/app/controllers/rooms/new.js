@@ -2,14 +2,40 @@ var Room = require('app/models/room')['default'];
 
 export
 default Ember.Controller.extend({
+    needs: 'world',
+    world: Ember.computed.alias('controllers.world'),
+
+    location: function() {
+        var world = this.get('world'),
+            loc = world.get('lastLocation');
+
+        if (!loc) return null;
+
+        return {
+            x: loc.x,
+            y: loc.y,
+            z: loc.z
+        };
+    }.property('world.lastLocation'),
+
+    needsLocation: function() {
+        if (this.get('location')) return false;
+        return true;
+    }.property('location'),
+
     actions: {
         save: function() {
             var self = this,
+                loc = this.get('location'),
                 data = {};
 
             Room.eachAttribute(function(name) {
                 data[name] = self.get(name);
             });
+
+            data.x = loc.x;
+            data.y = loc.y;
+            data.z = loc.z;
 
             var newRoom = this.store.createRecord('room', data);
 

@@ -72,6 +72,8 @@ module.exports = function(grunt) {
                     'vendor/ember-mocha-adapter/adapter.js',
                     'vendor/loader.js',
                     'vendor/ember-resolver/dist/ember-resolver.js',
+                    'vendor/threejs/build/three.js',
+                    'vendor/OrbitControls.js',
                     '_build/**/*.*',
                     'spec/init.js',
                     'spec/**/*_spec.js'
