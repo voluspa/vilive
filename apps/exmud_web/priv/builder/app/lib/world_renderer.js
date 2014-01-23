@@ -172,6 +172,7 @@ var gfx = null;
 
 export
 default
+
 function() {
     if (gfx === null) gfx = new WorldRenderer();
     return gfx;

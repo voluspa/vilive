@@ -123,6 +123,5 @@ default Ember.View.extend({
         gfx.camera.aspect = newWidth / newHeight;
         gfx.camera.updateProjectionMatrix();
         gfx.renderer.setSize(newWidth, newHeight);
-        gfx.render();
     }
 });
