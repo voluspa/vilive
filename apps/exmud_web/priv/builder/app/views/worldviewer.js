@@ -5,8 +5,11 @@ default Ember.View.extend({
     init: function() {
         var gfx = require('app/lib/world_renderer')['default']();
 
-        gfx.pickingLocation = this.get('picking');
-        gfx.location = this.get('controller').get('lastLocation');
+        if (this.get('pickingLocation')) {
+            gfx.state('pickingLocation');
+        } else {
+            gfx.state('selectingObjects');
+        }
 
         this.set('gfx', gfx);
 
@@ -79,9 +82,8 @@ default Ember.View.extend({
             $el = this.get('$el');
 
         e.preventDefault();
-        //calculate normalized device coordinates (-1 to 1)
-        gfx.mouse2d.x = (e.clientX / $el.innerWidth()) * 2 - 1;
-        gfx.mouse2d.y = -((e.clientY - 84) / $el.innerHeight()) * 2 + 1;
+        gfx.mouse2d.x = e.clientX;
+        gfx.mouse2d.y = e.clientY;
     },
 
     mouseDown: function() {
@@ -93,13 +95,11 @@ default Ember.View.extend({
         var gfx = this.get('gfx');
 
         this.set('selecting', false);
-        var grid = new THREE.Vector3(gfx.rollOver.position.x / 50,
-            gfx.rollOver.position.y / 50, (gfx.rollOver.position.z - 15) / 50);
+        var controller = this.get('controller'),
+            grid = gfx.location;
 
-        var controller = this.get('controller');
-
-        if (gfx.pickingLocation) {
-            gfx.location = gfx.rollOver.position;
+        if (gfx.isPickingLocation()) {
+            gfx.state('locationLocked');
             controller.send('setLocation', grid);
         } else {
             controller.store
@@ -120,8 +120,6 @@ default Ember.View.extend({
             newWidth = $(this.get('element')).innerWidth(),
             newHeight = window.innerHeight - $('header').outerHeight(true);
 
-        gfx.camera.aspect = newWidth / newHeight;
-        gfx.camera.updateProjectionMatrix();
-        gfx.renderer.setSize(newWidth, newHeight);
+        gfx.resize(newWidth, newHeight);
     }
 });

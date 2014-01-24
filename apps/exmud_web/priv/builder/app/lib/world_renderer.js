@@ -1,4 +1,7 @@
 function WorldRenderer() {
+    this.cubeSize = 30;
+    this.gridStepSize = 50;
+
     var width = window.innerWidth,
         height = window.innerHeight - $('header').outerHeight(true);
 
@@ -29,7 +32,9 @@ function WorldRenderer() {
     bottom.position.set(-1, -1, -1);
     scene.add(bottom);
 
-    var shadowGeometry = new THREE.CubeGeometry(30, 30, 30);
+    var shadowGeometry = new THREE.CubeGeometry(this.cubeSize,
+                                              this.cubeSize,
+                                              this.cubeSize);
     var shadowMaterial = new THREE.MeshBasicMaterial({
         color: 0x22bb22,
         opacity: 0.5,
@@ -42,13 +47,19 @@ function WorldRenderer() {
 
     var cube = {
         shadow: shadowCube,
-        geometry: new THREE.CubeGeometry(30, 30, 30),
+        //hmmm i have to create a new cube geometry here, trying to reuse the shadow one
+        //causes invalid operation webgl errors
+        geometry: new THREE.CubeGeometry(this.cubeSize,
+                                         this.cubeSize,
+                                         this.cubeSize),
         material: new THREE.MeshLambertMaterial({
             emissive: 0x22ff22
         })
     };
 
-    var rollOverGeometry = new THREE.CubeGeometry(50, 50, 50);
+    var rollOverGeometry = new THREE.CubeGeometry(this.gridStepSize,
+                                                  this.gridStepSize,
+                                                  this.gridStepSize);
     var rollOverMaterial = new THREE.MeshBasicMaterial({
         color: 0xff0000,
         opacity: 0.5,
@@ -69,8 +80,11 @@ function WorldRenderer() {
     plane.position.set(0, 0, 0);
     scene.add(plane);
 
-    this.pickingLocation = false;
-    this.location = null;
+    this.$el = Ember.$(renderer.domElement);
+    this.width = this.$el.innerWidth();
+    this.height = this.$el.innerHeight();
+    this.offset = this.$el.offset();
+    this.location = { x: 0, y: 0, z: 0};
     this.renderer = renderer;
     this.camera = camera;
     this.scene = scene;
@@ -89,6 +103,7 @@ function WorldRenderer() {
     this.modelsToCubes = {};
     this.cubesToModels = {};
 
+    this.state('selectingObjects');
     this.animate();
 }
 
@@ -112,7 +127,9 @@ WorldRenderer.prototype = {
         if (!intersector.object) return;
         if (!intersector.face || !intersector.face.normal) return;
 
-        var matrixWorld = intersector.object.matrixWorld;
+        var gridStepSize = this.gridStepSize,
+            cubeSize = this.cubeSize,
+            matrixWorld = intersector.object.matrixWorld;
 
         this.normalMatrix.getNormalMatrix(matrixWorld);
 
@@ -122,26 +139,26 @@ WorldRenderer.prototype = {
         var pos = new THREE.Vector3();
         pos.addVectors(intersector.point, vec);
 
-        pos.x = Math.floor(pos.x / 50) * 50;
-        pos.y = Math.floor(pos.y / 50) * 50;
-        pos.z = Math.floor(pos.z / 50) * 50 + 15;
+        pos.x = Math.floor(pos.x / gridStepSize) * gridStepSize;
+        pos.y = Math.floor(pos.y / gridStepSize) * gridStepSize;
+        pos.z = Math.floor(pos.z / gridStepSize) * gridStepSize + (cubeSize / 2);
 
         return pos;
     },
 
     _render: function(timestamp) {
-        if (!this.pickingLocation || !this.location) {
-            var raycaster = this.projector.pickingRay(this.mouse2d.clone(), this.camera),
+        if (!this.isLocationLocked()) {
+            //calculate normalized device coordinates (-1 to 1)
+            //grid squares are centered so have to offset coordinates a bit to make
+            //the shadow/rollover follow cursor correctly
+            var gridHalfStep = this.gridStepSize / 2,
+                ndc = new THREE.Vector3();
+            ndc.x = ((this.mouse2d.x - this.offset.left + gridHalfStep) / this.width) * 2 - 1;
+            ndc.y = -((this.mouse2d.y - this.offset.top - gridHalfStep) / this.height) * 2 + 1;
+
+            var raycaster = this.projector.pickingRay(ndc, this.camera),
                 intersections = raycaster.intersectObjects(this.scene.children),
                 intersector;
-
-            if (this.pickingLocation) {
-                this.rollOver.visible = false;
-                this.cube.shadow.visible = true;
-            } else {
-                this.rollOver.visible = true;
-                this.cube.shadow.visible = false;
-            }
 
             if (intersections.length > 0) {
                 intersector = this._getRealIntersector(intersections);
@@ -151,20 +168,60 @@ WorldRenderer.prototype = {
                     if (pos) {
                         this.rollOver.position = pos;
                         this.cube.shadow.position = pos;
+
+                        this.location.x = pos.x / this.gridStepSize;
+                        this.location.y = pos.y / this.gridStepSize;
+                        this.location.z = (pos.z - (this.cubeSize / 2)) / this.gridStepSize;
                     }
                 }
             }
+
         }
 
         this.renderer.render(this.scene, this.camera);
+    },
+
+    state: function (state) {
+        this._state = state;
+
+        if (this.isPickingLocation()) {
+            this.rollOver.visible = false;
+            this.cube.shadow.visible = true;
+        }
+
+        if (this.isSelectingObjects()) {
+            this.rollOver.visible = true;
+            this.cube.shadow.visible = false;
+        }
+    },
+
+    isPickingLocation: function () {
+        return this._state === 'pickingLocation';
+    },
+
+    isLocationLocked: function () {
+        return this._state === 'locationLocked';
+    },
+
+    isSelectingObjects: function () {
+        return this._state === 'selectingObjects';
     },
 
     animate: function() {
         requestAnimationFrame(this.animate.bind(this));
         this.controls.update();
         this._render();
-    }
+    },
 
+    resize: function(newWidth, newHeight) {
+        this.camera.aspect = newWidth / newHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(newWidth, newHeight);
+
+        this.width = this.$el.innerWidth();
+        this.height = this.$el.innerHeight();
+        this.offset = this.$el.offset();
+    }
 };
 
 //initialize only once

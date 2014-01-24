@@ -26,7 +26,6 @@ module.exports = function(grunt) {
                 tasks: [
                     'unlock',
                     'lock',
-                    'jsbeautifier',
                     'jshint',
                     'transpile',
                     'fileblocks:dev',
