@@ -33,8 +33,8 @@ function WorldRenderer() {
     scene.add(bottom);
 
     var shadowGeometry = new THREE.CubeGeometry(this.cubeSize,
-                                              this.cubeSize,
-                                              this.cubeSize);
+                                                this.cubeSize,
+                                                this.cubeSize);
     var shadowMaterial = new THREE.MeshBasicMaterial({
         color: 0x22bb22,
         opacity: 0.5,
@@ -71,11 +71,11 @@ function WorldRenderer() {
 
     //this is used for intersection detection on the grid
     var plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000),
-        new THREE.MeshBasicMaterial({
-            color: 0x444444,
-            opacity: 0.15,
-            transparent: true
-        }));
+                               new THREE.MeshBasicMaterial({
+                                   color: 0x444444,
+                                   opacity: 0.15,
+                                   transparent: true
+                               }));
     //plane.visible = false;
     plane.position.set(0, 0, 0);
     scene.add(plane);
@@ -84,7 +84,11 @@ function WorldRenderer() {
     this.width = this.$el.innerWidth();
     this.height = this.$el.innerHeight();
     this.offset = this.$el.offset();
-    this.location = { x: 0, y: 0, z: 0};
+    this.location = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
     this.renderer = renderer;
     this.camera = camera;
     this.scene = scene;
@@ -181,7 +185,7 @@ WorldRenderer.prototype = {
         this.renderer.render(this.scene, this.camera);
     },
 
-    state: function (state) {
+    state: function(state) {
         this._state = state;
 
         if (this.isPickingLocation()) {
@@ -195,15 +199,15 @@ WorldRenderer.prototype = {
         }
     },
 
-    isPickingLocation: function () {
+    isPickingLocation: function() {
         return this._state === 'pickingLocation';
     },
 
-    isLocationLocked: function () {
+    isLocationLocked: function() {
         return this._state === 'locationLocked';
     },
 
-    isSelectingObjects: function () {
+    isSelectingObjects: function() {
         return this._state === 'selectingObjects';
     },
 
@@ -221,6 +225,27 @@ WorldRenderer.prototype = {
         this.width = this.$el.innerWidth();
         this.height = this.$el.innerHeight();
         this.offset = this.$el.offset();
+    },
+
+    addCube: function(model) {
+        var c = this.modelsToCubes[model];
+        if (c) return;
+
+        c = new THREE.Mesh(this.cube.geometry, this.cube.material);
+        c.position.set(50 * model.get('x'), 50 * model.get('y'), (50 * model.get('z')) + 15);
+        this.scene.add(c);
+
+        this.modelsToCubes[model] = c;
+        this.cubesToModels[c] = model;
+    },
+
+    removeCube: function(model) {
+        var c = this.modelsToCubes[model];
+        if (!c) return;
+
+        this.scene.remove(c);
+        delete this.modelsToCubes[model];
+        delete this.cubesToModels[c];
     }
 };
 

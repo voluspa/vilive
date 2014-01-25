@@ -44,36 +44,13 @@ default Ember.View.extend({
         this.set('selecting', false);
     },
 
-    addCube: function(model) {
-        var gfx = this.get('gfx'),
-            c = gfx.modelsToCubes[model];
-        if (c) return;
-
-        c = new THREE.Mesh(gfx.cube.geometry, gfx.cube.material);
-        c.position.set(50 * model.get('x'), 50 * model.get('y'), (50 * model.get('z')) + 15);
-        gfx.scene.add(c);
-
-        gfx.modelsToCubes[model] = c;
-        gfx.cubesToModels[c] = model;
-    },
-
-    removeCube: function(model) {
-        var gfx = this.get('gfx'),
-            c = gfx.modelsToCubes[model];
-        if (!c) return;
-
-        gfx.scene.remove(c);
-        delete gfx.modelsToCubes[model];
-        delete gfx.cubesToModels[c];
-    },
-
     renderCubes: function() {
         var self = this,
             rooms = this.get('controller')
                 .get('model');
 
         rooms.forEach(function(room) {
-            self.addCube(room);
+            self.get('gfx').addCube(room);
         });
     }.observes('controller.model').on('init'),
 
