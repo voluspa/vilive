@@ -85,7 +85,7 @@ function WorldRenderer() {
                                    transparent: true
                                }));
     //plane.visible = false;
-    plane.position.set(0, 0, 0);
+    plane.position.set(0, 0, -(this.cubeSize / 2));
     this.scene.add(plane);
     this.plane = plane;
 
@@ -94,7 +94,7 @@ function WorldRenderer() {
 }
 
 WorldRenderer.prototype = {
-    _singleToGrid: function (x) {
+    _snapToGrid: function (x) {
         var n = x;
         //negate it so the offset and floor work as expected
         if (x < 0) n = -n;
@@ -124,9 +124,9 @@ WorldRenderer.prototype = {
         var pos = new THREE.Vector3();
         pos.addVectors(intersector.point, vec);
 
-        pos.x = this._singleToGrid(pos.x);
-        pos.y = this._singleToGrid(pos.y);
-        pos.z = this._singleToGrid(pos.z) + (cubeSize / 2);
+        pos.x = this._snapToGrid(pos.x);
+        pos.y = this._snapToGrid(pos.y);
+        pos.z = this._snapToGrid(pos.z);
 
         return pos;
     },
@@ -200,7 +200,7 @@ WorldRenderer.prototype = {
 
             this.location.x = pos.x / this.gridStepSize;
             this.location.y = pos.y / this.gridStepSize;
-            this.location.z = (pos.z - (this.cubeSize / 2)) / this.gridStepSize;
+            this.location.z = pos.z / this.gridStepSize;
         }
     },
 
@@ -258,9 +258,10 @@ WorldRenderer.prototype = {
         if (c) return;
 
         c = new THREE.Object3D();
-        c.position.x = model.get('x') * this.gridStepSize;
-        c.position.y = model.get('y') * this.gridStepSize;
-        c.position.z = (model.get('z') * this.gridStepSize) + (this.cubeSize / 2);
+        var loc = model.get('location');
+        c.position.x = loc.x * this.gridStepSize;
+        c.position.y = loc.y * this.gridStepSize;
+        c.position.z = loc.z * this.gridStepSize;
         c.userData = {
             type: 'room',
             room: model

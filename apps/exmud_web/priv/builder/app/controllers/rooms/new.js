@@ -33,10 +33,6 @@ default Ember.Controller.extend({
                 data[name] = self.get(name);
             });
 
-            data.x = loc.x;
-            data.y = loc.y;
-            data.z = loc.z;
-
             var newRoom = this.store.createRecord('room', data);
 
             newRoom.save()

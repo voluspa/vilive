@@ -79,16 +79,17 @@ default Ember.View.extend({
             gfx.state('locationLocked');
             controller.send('setLocation', grid);
         } else {
-            controller.store
-                .find('room', {
-                    x: grid.x,
-                    y: grid.y,
-                    z: grid.z
-                })
-                .then(function(d) {
-                    if (d.content.length !== 1) return;
-                    controller.transitionToRoute('room', d.content[0]);
-                });
+            //assuming all visible rooms are loaded
+            var rooms = controller.store
+                                  .filter('room', function (room) {
+                                      var loc = room.get('location');
+                                      return loc.x === grid.x &&
+                                             loc.y === grid.y &&
+                                             loc.z === grid.z;
+                                  });
+
+            if (rooms.content.length !== 1) return;
+            controller.transitionToRoute('room', rooms.content[0]);
         }
     },
 
