@@ -4,14 +4,13 @@ default Ember.View.extend({
 
     init: function() {
         var gfx = require('app/lib/world_renderer')['default']();
+        this.set('gfx', gfx);
 
         if (this.get('pickingLocation')) {
             gfx.state('pickingLocation');
         } else {
             gfx.state('selectingObjects');
         }
-
-        this.set('gfx', gfx);
 
         this._super();
     },
@@ -44,13 +43,13 @@ default Ember.View.extend({
         this.set('selecting', false);
     },
 
-    renderCubes: function() {
+    renderRooms: function() {
         var self = this,
             rooms = this.get('controller')
                 .get('model');
 
         rooms.forEach(function(room) {
-            self.get('gfx').addCube(room);
+            self.get('gfx').addRoom(room);
         });
     }.observes('controller.model').on('init'),
 
@@ -70,6 +69,7 @@ default Ember.View.extend({
     mouseUp: function(e) {
         if (!this.get('selecting')) return;
         var gfx = this.get('gfx');
+        gfx._updateRollovers();
 
         this.set('selecting', false);
         var controller = this.get('controller'),

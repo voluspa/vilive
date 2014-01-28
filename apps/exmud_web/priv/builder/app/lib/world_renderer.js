@@ -1,36 +1,58 @@
 function WorldRenderer() {
-    this.cubeSize = 30;
-    this.gridStepSize = 50;
+    var self = this;
 
+    //need some measurements to start off with
     var width = window.innerWidth,
         height = window.innerHeight - $('header').outerHeight(true);
 
-    var renderer = new THREE.WebGLRenderer(),
-        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000),
-        scene = new THREE.Scene(),
-        controls = new THREE.OrbitControls(camera, renderer.domElement),
-        ambient = new THREE.AmbientLight(0x404040),
-        top = new THREE.DirectionalLight(0xaaaaaa),
-        bottom = new THREE.DirectionalLight(0x777777);
+    this.renderer = new THREE.WebGLRenderer();
+    this.scene = new THREE.Scene();
+    this.projector = new THREE.Projector();
+    this.raycaster = new THREE.Raycaster();
 
-    var axis = new THREE.AxisHelper(100);
-    axis.position.set(0, 0, 0);
-    scene.add(axis);
+    this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+    this.camera.position.set(0, 0, 500);
+    this.scene.add(this.camera);
 
-    renderer.setSize(width, height);
-    renderer.setClearColor(0xffffff, 1);
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 
-    camera.position.set(0, 0, 500);
-    scene.add(camera);
+    this.renderer.setSize(width, height);
+    this.renderer.setClearColor(0xffffff, 1);
+    this.$el = Ember.$(this.renderer.domElement);
+    this.width = this.$el.innerWidth();
+    this.height = this.$el.innerHeight();
+    this.offset = this.$el.offset();
 
-    ambient.position.set(0, 0, 10000);
-    scene.add(ambient);
+    this.cubeSize = 30;
+    this.gridStepSize = 50;
+    this.normalMatrix = new THREE.Matrix3();
+    this.modelsToCubes = {};
+    this.cubesToModels = {};
+    this.mouse2d = new THREE.Vector3(0, 10000, 0.5);
+    this.location = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
 
-    top.position.set(1, 1, 1);
-    scene.add(top);
+    this.light = {
+        ambient: new THREE.AmbientLight(0x404040),
+        top: new THREE.DirectionalLight(0xaaaaaa),
+        bottom: new THREE.DirectionalLight(0x777777)
+    };
 
-    bottom.position.set(-1, -1, -1);
-    scene.add(bottom);
+    this.light.ambient.position.set(0, 0, 10000);
+    this.light.top.position.set(1, 1, 1);
+    this.light.bottom.position.set(-1, -1, -1);
+
+    Object.keys(this.light)
+          .forEach(function (key) {
+              self.scene.add(self.light[key]);
+          });
+
+    this.axis = new THREE.AxisHelper(100);
+    this.axis.position.set(0, 0, 0);
+    this.scene.add(this.axis);
 
     var shadowGeometry = new THREE.CubeGeometry(this.cubeSize,
                                                 this.cubeSize,
@@ -43,31 +65,17 @@ function WorldRenderer() {
 
     var shadowCube = new THREE.Mesh(shadowGeometry, shadowMaterial);
     shadowCube.visible = false;
-    scene.add(shadowCube);
+    shadowCube.position.set(0,0,10000);
+    this.scene.add(shadowCube);
 
-    var cube = {
+    this.cube = {
         shadow: shadowCube,
         //hmmm i have to create a new cube geometry here, trying to reuse the shadow one
         //causes invalid operation webgl errors
         geometry: new THREE.CubeGeometry(this.cubeSize,
                                          this.cubeSize,
-                                         this.cubeSize),
-        material: new THREE.MeshLambertMaterial({
-            emissive: 0x22ff22
-        })
+                                         this.cubeSize)
     };
-
-    var rollOverGeometry = new THREE.CubeGeometry(this.gridStepSize,
-                                                  this.gridStepSize,
-                                                  this.gridStepSize);
-    var rollOverMaterial = new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        opacity: 0.5,
-        transparent: true
-    });
-    var rollOverMesh = new THREE.Mesh(rollOverGeometry, rollOverMaterial);
-    rollOverMesh.position.set(0, 0, 10000);
-    scene.add(rollOverMesh);
 
     //this is used for intersection detection on the grid
     var plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000),
@@ -78,53 +86,26 @@ function WorldRenderer() {
                                }));
     //plane.visible = false;
     plane.position.set(0, 0, 0);
-    scene.add(plane);
-
-    this.$el = Ember.$(renderer.domElement);
-    this.width = this.$el.innerWidth();
-    this.height = this.$el.innerHeight();
-    this.offset = this.$el.offset();
-    this.location = {
-        x: 0,
-        y: 0,
-        z: 0
-    };
-    this.renderer = renderer;
-    this.camera = camera;
-    this.scene = scene;
-    this.controls = controls;
-    this.projector = new THREE.Projector();
-    this.cube = cube;
-    this.rollOver = rollOverMesh;
+    this.scene.add(plane);
     this.plane = plane;
-    this.light = {
-        ambient: ambient,
-        top: top,
-        bottom: bottom
-    };
-    this.mouse2d = new THREE.Vector3(0, 10000, 0.5);
-    this.normalMatrix = new THREE.Matrix3();
-    this.modelsToCubes = {};
-    this.cubesToModels = {};
 
     this.state('selectingObjects');
     this.animate();
 }
 
 WorldRenderer.prototype = {
-    _getRealIntersector: function(intersects) {
-        var intersector;
+    _singleToGrid: function (x) {
+        var n = x;
+        //negate it so the offset and floor work as expected
+        if (x < 0) n = -n;
 
-        for (var i = 0; i < intersects.length; i++) {
-            intersector = intersects[i];
+        //grid is cenetered on origin so we have to offset 
+        //the coordinate first before snapping to grid
+        n = n + (this.gridStepSize / 2);
+        var grid =  Math.floor(n / this.gridStepSize) * this.gridStepSize;
 
-            if (intersector.object != this.rollOver &&
-                intersector.object != this.cube.shadow) {
-                return intersector;
-            }
-        }
-
-        return null;
+        if(x < 0) return -grid;
+        return grid;
     },
 
     _calculateGridPosition: function(intersector) {
@@ -143,43 +124,89 @@ WorldRenderer.prototype = {
         var pos = new THREE.Vector3();
         pos.addVectors(intersector.point, vec);
 
-        pos.x = Math.floor(pos.x / gridStepSize) * gridStepSize;
-        pos.y = Math.floor(pos.y / gridStepSize) * gridStepSize;
-        pos.z = Math.floor(pos.z / gridStepSize) * gridStepSize + (cubeSize / 2);
+        pos.x = this._singleToGrid(pos.x);
+        pos.y = this._singleToGrid(pos.y);
+        pos.z = this._singleToGrid(pos.z) + (cubeSize / 2);
 
         return pos;
     },
 
-    _render: function(timestamp) {
-        if (!this.isLocationLocked()) {
-            //calculate normalized device coordinates (-1 to 1)
-            //grid squares are centered so have to offset coordinates a bit to make
-            //the shadow/rollover follow cursor correctly
-            var gridHalfStep = this.gridStepSize / 2,
-                ndc = new THREE.Vector3();
-            ndc.x = ((this.mouse2d.x - this.offset.left + gridHalfStep) / this.width) * 2 - 1;
-            ndc.y = -((this.mouse2d.y - this.offset.top - gridHalfStep) / this.height) * 2 + 1;
+    _clientToNDC: function (coords) {
+        //calculate normalized device coordinates (-1 to 1)
+        var ndc = new THREE.Vector3();
 
-            var raycaster = this.projector.pickingRay(ndc, this.camera),
-                intersections = raycaster.intersectObjects(this.scene.children),
-                intersector;
+        ndc.x = ((coords.x - this.offset.left) / this.width) * 2 - 1;
+        ndc.y = -((coords.y - this.offset.top) / this.height) * 2 + 1;
 
-            if (intersections.length > 0) {
-                intersector = this._getRealIntersector(intersections);
+        return ndc;
+    },
 
-                if (intersector) {
-                    var pos = this._calculateGridPosition(intersector);
-                    if (pos) {
-                        this.rollOver.position = pos;
-                        this.cube.shadow.position = pos;
+    _getIntersectors: function () {
+        var vector = this._clientToNDC(this.mouse2d);
+        vector.z = 1;
 
-                        this.location.x = pos.x / this.gridStepSize;
-                        this.location.y = pos.y / this.gridStepSize;
-                        this.location.z = (pos.z - (this.cubeSize / 2)) / this.gridStepSize;
-                    }
-                }
+        this.projector.unprojectVector(vector, this.camera);
+        vector.sub(this.camera.position).normalize();
+
+        this.raycaster.set(this.camera.position, vector);
+
+        return this.raycaster.intersectObjects(this.scene.children, true);
+    },
+
+    _getRealIntersector: function(intersects) {
+        var intersector;
+
+        for (var i = 0; i < intersects.length; i++) {
+            intersector = intersects[i];
+
+            if (intersector.object != this.cube.shadow &&
+                intersector.object != this.axis) {
+                return intersector;
+            }
+        }
+
+        return null;
+    },
+
+    _highlightObject: function (intersector) {
+        var obj = null;
+        if (intersector && intersector.object !== this.plane) obj = intersector.object;
+
+        //clear previous
+        if (this._highlighted) {
+            this._highlighted.material.emissive.setHex(this._highlighted.origHex);
+        }
+
+        this._highlighted = obj;
+
+        if (!obj) return;
+        this._highlighted.origHex = obj.material.emissive.getHex();
+        this._highlighted.material.emissive.setHex(0xff0000);
+    },
+
+    _updateRollovers: function () {
+        var intersections = this._getIntersectors(),
+            intersector = this._getRealIntersector(intersections),
+            pos;
+
+        this._highlightObject(intersector);
+
+        if (!intersector) return;
+        pos = this._calculateGridPosition(intersector);
+        if (pos) {
+            if (this.cube.shadow.visible) {
+                this.cube.shadow.position = pos;
             }
 
+            this.location.x = pos.x / this.gridStepSize;
+            this.location.y = pos.y / this.gridStepSize;
+            this.location.z = (pos.z - (this.cubeSize / 2)) / this.gridStepSize;
+        }
+    },
+
+    _render: function(timestamp) {
+        if (!this.isLocationLocked()) {
+            this._updateRollovers();
         }
 
         this.renderer.render(this.scene, this.camera);
@@ -189,13 +216,12 @@ WorldRenderer.prototype = {
         this._state = state;
 
         if (this.isPickingLocation()) {
-            this.rollOver.visible = false;
             this.cube.shadow.visible = true;
         }
 
         if (this.isSelectingObjects()) {
-            this.rollOver.visible = true;
             this.cube.shadow.visible = false;
+            this.cube.shadow.position.set(0,0,10000);
         }
     },
 
@@ -227,25 +253,75 @@ WorldRenderer.prototype = {
         this.offset = this.$el.offset();
     },
 
-    addCube: function(model) {
+    addRoom: function(model) {
         var c = this.modelsToCubes[model];
         if (c) return;
 
-        c = new THREE.Mesh(this.cube.geometry, this.cube.material);
-        c.position.set(50 * model.get('x'), 50 * model.get('y'), (50 * model.get('z')) + 15);
+        c = new THREE.Object3D();
+        c.position.x = model.get('x') * this.gridStepSize;
+        c.position.y = model.get('y') * this.gridStepSize;
+        c.position.z = (model.get('z') * this.gridStepSize) + (this.cubeSize / 2);
+        c.userData = {
+            type: 'room',
+            room: model
+        };
+
+        var cube = new THREE.Mesh(this.cube.geometry,
+                                  new THREE.MeshLambertMaterial({
+                                      emissive: 0x22ff22
+                                  }));
+        c.add(cube);
+
+        var north = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
+                                   new THREE.MeshLambertMaterial({
+                                       emissive: 0x000000
+                                   }));
+        north.position.y = this.cubeSize / 1.5;
+        north.userData = {
+            type: 'exit',
+            exit: 'north'
+        };
+        c.add(north);
+
+        var east = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
+                                   new THREE.MeshLambertMaterial({
+                                       emissive: 0x000000
+                                   }));
+        east.position.x = this.cubeSize / 1.5;
+        east.rotation.z = Math.PI / 2;
+        east.userData = {
+            type: 'exit',
+            exit: 'east'
+        };
+        c.add(east);
+
+        var south = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
+                                   new THREE.MeshLambertMaterial({
+                                       emissive: 0x000000
+                                   }));
+        south.position.y = -this.cubeSize / 1.5;
+        south.userData = {
+            type: 'exit',
+            exit: 'south'
+        };
+        c.add(south);
+
+        var west = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
+                                   new THREE.MeshLambertMaterial({
+                                       emissive: 0x000000
+                                   }));
+        west.position.x = -this.cubeSize / 1.5;
+        west.rotation.z = Math.PI / 2;
+        west.userData = {
+            type: 'exit',
+            exit: 'west'
+        };
+        c.add(west);
+
         this.scene.add(c);
 
         this.modelsToCubes[model] = c;
         this.cubesToModels[c] = model;
-    },
-
-    removeCube: function(model) {
-        var c = this.modelsToCubes[model];
-        if (!c) return;
-
-        this.scene.remove(c);
-        delete this.modelsToCubes[model];
-        delete this.cubesToModels[c];
     }
 };
 
@@ -253,9 +329,7 @@ WorldRenderer.prototype = {
 var gfx = null;
 
 export
-default
-
-function() {
+default function() {
     if (gfx === null) gfx = new WorldRenderer();
     return gfx;
 }
