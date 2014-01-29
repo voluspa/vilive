@@ -72,16 +72,9 @@ describe('creating a new room', function() {
         });
     });
 
-    describe('when saving', function() {
-        beforeEach(function() {
-            fillIn('#roomTitle', 'A cold creepy cave');
-            fillIn('#roomDescription', "It's so creepy.");
-            click('[name=save]');
-        });
-
-        it('displays the room id', function() {
-            var id = findInForm('#roomId')[0];
-            expect(id.textContent).to.be.not.eql("");
-        });
+    it('can saving', function() {
+        fillIn('#roomTitle', 'A cold creepy cave');
+        fillIn('#roomDescription', "It's so creepy.");
+        click('[name=save]');
     });
 });

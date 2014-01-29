@@ -30,7 +30,6 @@ module.exports = function(grunt) {
                     'transpile',
                     'fileblocks:dev',
                     'unlock',
-                    'testem:ci:dev'
                 ]
             },
             styles: {
@@ -50,7 +49,6 @@ module.exports = function(grunt) {
                     'lock',
                     'emberTemplates:dev',
                     'unlock',
-                    'testem:ci:dev'
                 ]
             }
         },
@@ -83,8 +81,8 @@ module.exports = function(grunt) {
                     debug: true,
                     framework: 'mocha+chai',
                     parallel: 4,
-                    launch_in_dev: ['Safari'],
-                    launch_in_ci: ['PhantomJS']
+                    launch_in_dev: ['Chrome', 'Firefox', 'Safari'],
+                    launch_in_ci: ['Chrome', 'Firefox', 'Safari']
                 }
             }
         },
