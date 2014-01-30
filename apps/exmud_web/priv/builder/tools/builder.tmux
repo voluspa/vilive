@@ -10,8 +10,33 @@
 # assuming file is <session>.tmux
 SESS=`basename $0 '.tmux'`
 
-tmux has-session -t $SESS
-if [ $? != 0 ] ; then
+tmux has-session -t $SESS 2> /dev/null
+EXISTS=$?
+
+if [ "$1" == "stop" ] ; then
+    if [ $EXISTS != 0 ] ; then
+        echo "'$SESS' did not exist"
+        exit
+    else
+        # stop testem, server, and watch
+        tmux send-keys -t $SESS:2 'q'
+        tmux send-keys -t $SESS:3 'C-c'
+        tmux send-keys -t $SESS:4 'C-c'
+
+        # let them clean up
+        sleep 1
+
+        # exit their windows
+        tmux send-keys -t $SESS:4 'exit' C-m
+        tmux send-keys -t $SESS:3 'exit' C-m
+        tmux send-keys -t $SESS:2 'exit' C-m
+
+        # make user exit vim themselves
+        tmux attach -t $SESS
+    fi
+fi
+
+if [ $EXISTS != 0 ] ; then
     tmux new-session -s $SESS -n vim -d
 
     tmux send-keys -t $SESS:1 'vim' C-m
@@ -31,6 +56,10 @@ if [ $? != 0 ] ; then
     tmux send-keys -t $SESS:4 'grunt watch' C-m
 
     tmux select-window -t $SESS:1
+    echo "'$SESS' created"
 fi
 
-tmux attach -t $SESS
+if [ "$1" != "start" ] ; then
+    echo "attaching to '$SESS'"
+    tmux attach -t $SESS
+fi
