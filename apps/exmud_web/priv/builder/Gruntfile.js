@@ -59,33 +59,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        testem: {
-            dev: {
-                src: [
-                    'vendor/jquery/jquery.js',
-                    'vendor/handlebars/handlebars.js',
-                    'vendor/ember/ember.js',
-                    'vendor/ember-data/ember-data.js',
-                    'vendor/ember-mocha-adapter/adapter.js',
-                    'vendor/loader.js',
-                    'vendor/ember-resolver/dist/ember-resolver.js',
-                    'vendor/threejs/build/three.js',
-                    'vendor/OrbitControls.js',
-                    '_build/**/*.*',
-                    'spec/init.js',
-                    'spec/**/*_spec.js'
-                ],
-                options: {
-                    host: '127.0.0.1',
-                    growl: true,
-                    debug: true,
-                    framework: 'mocha+chai',
-                    parallel: 4,
-                    launch_in_dev: ['Chrome', 'Firefox', 'Safari'],
-                    launch_in_ci: ['Chrome', 'Firefox', 'Safari']
-                }
-            }
-        },
         jshint: {
             app: {
                 src: ['app/**/*.js'],

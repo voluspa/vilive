@@ -6,13 +6,43 @@
  */
 
 describe('when no rooms exist', function() {
-
-    beforeEach(function() {
+    beforeEach(function(done) {
         setFixtures('room', []);
-        visit('/');
+        visit('/').then(done);
+    });
+
+    afterEach(function() {
+        App.reset();
     });
 
     it('displays help information', function() {
         expect(find('.help')).to.have.length(1);
+    });
+});
+
+describe('when rooms exist', function() {
+    beforeEach(function (done) {
+        setFixtures('room', [
+            {
+              "title": "A dark cave",
+              "description": "Seriously bring a torch.",
+              "location": {
+                "x": 1,
+                "y": 1,
+                "z": 0
+              },
+              "id": 1
+            }
+        ]);
+
+        visit('/').then(done);
+    });
+
+    afterEach(function() {
+        App.reset();
+    });
+
+    it('renders the world', function () {
+        expect(find('.world-viewer')).to.have.length(1);
     });
 });

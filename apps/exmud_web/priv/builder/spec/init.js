@@ -1,10 +1,3 @@
-$(function() {
-    $('<div/>', {
-        'id': 'ember-test-fixture'
-    })
-        .appendTo('body');
-});
-
 Ember.Test.adapter = Ember.Test.MochaAdapter.create();
 
 var router = require('app/router')['default'].reopen({
@@ -19,12 +12,8 @@ function setFixtures(model, fixtures) {
 }
 
 window.App = require('app/application')['default'].create();
-App.rootElement = '#ember-test-fixture';
 App.setupForTesting();
 App.injectTestHelpers();
 
 window.expect = chai.expect;
 
-afterEach(function() {
-    App.reset();
-});

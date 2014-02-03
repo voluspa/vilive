@@ -25,6 +25,10 @@ describe('creating a new room', function() {
         visit('/rooms/new');
     });
 
+    afterEach(function() {
+        App.reset();
+    });
+
     it('displays a blank form', function() {
         expect(findForm()).to.be.not.empty;
     });
@@ -52,6 +56,10 @@ describe('creating a new room', function() {
             click('[name=cancel]');
         });
 
+        afterEach(function() {
+            App.reset();
+        });
+
         it('removes the form', function() {
             expect(findForm().length).to.be.eql(0);
         });
@@ -70,11 +78,5 @@ describe('creating a new room', function() {
                 expect(roomDescription.value).to.be.empty;
             });
         });
-    });
-
-    it('can saving', function() {
-        fillIn('#roomTitle', 'A cold creepy cave');
-        fillIn('#roomDescription', "It's so creepy.");
-        click('[name=save]');
     });
 });

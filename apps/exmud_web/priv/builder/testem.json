@@ -1,0 +1,27 @@
+{
+    "src_files": [
+        "app/**/*.js",
+        "spec/init.js",
+        "spec/**/*_spec.js"
+    ],
+    "serve_files": [
+        "vendor/jquery/jquery.js",
+        "vendor/handlebars/handlebars.js",
+        "vendor/ember/ember.js",
+        "vendor/ember-data/ember-data.js",
+        "vendor/ember-mocha-adapter/adapter.js",
+        "vendor/loader.js",
+        "vendor/ember-resolver/dist/ember-resolver.js",
+        "vendor/threejs/build/three.js",
+        "vendor/OrbitControls.js",
+        "_build/**/*.js",
+        "spec/init.js",
+        "spec/**/*_spec.js"
+    ],
+    "host": "127.0.0.1",
+    "growl": true,
+    "framework": "mocha+chai",
+    "parallel": 4,
+    "launch_in_dev": ["Chrome", "Firefox"],
+    "launch_in_ci": ["Chrome", "Firefox", "Safari"]
+}
