@@ -50,9 +50,9 @@ app.namespace('/api', function () {
     });
 });
 
-app.use(static_file({ urlRoot: '/vendor', directory: '../vendor' }));
-app.use(static_file({ urlRoot: '/assets', directory: '../_build/assets' }));
-app.use(static_file({ urlRoot: '/builder', file: '../_build/index.html' }));
+app.use(static_file({ urlRoot: '/vendor', directory: 'vendor' }));
+app.use(static_file({ urlRoot: '/assets', directory: '_build/assets' }));
+app.use(static_file({ urlRoot: '/builder', file: '_build/index.html' }));
 
 app.listen(port);
 console.log('started on ' + port);
@@ -89,7 +89,11 @@ function static_file(options) {
 
             // Serve the file
             res.sendfile(filePath, function(err) {
-                if (err) { next(); return; }
+                if (err) {
+                    console.error(err);
+                    next();
+                    return;
+                }
             });
         });
     };

@@ -51,8 +51,7 @@ if [ $EXISTS != 0 ] ; then
     tmux send-keys -t $SESS:2 'testem' C-m
 
     tmux split-window -h -p 30 -t $SESS:2
-    tmux send-keys -t $SESS:2.2 'cd ./api-stub' C-m
-    tmux send-keys -t $SESS:2.2 'nodemon server.js' C-m
+    tmux send-keys -t $SESS:2.2 'nodemon ./api-stub/server.js' C-m
 
     tmux split-window -v -p 30 -t $SESS:2.2
     #tmux send-keys -t $SESS:2.3 'ulimit -n 10000' C-m

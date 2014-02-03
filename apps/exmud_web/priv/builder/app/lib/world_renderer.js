@@ -28,8 +28,8 @@ function WorldRenderer() {
     this.normalMatrix = new THREE.Matrix3();
     this.modelsToCubes = {};
     this.cubesToModels = {};
-    this.mouse2d = new THREE.Vector3(0, 10000, 0.5);
-    this.location = {
+    this._mouse2d = new THREE.Vector3(0, 10000, 0.5);
+    this._location = {
         x: 0,
         y: 0,
         z: 0
@@ -142,7 +142,7 @@ WorldRenderer.prototype = {
     },
 
     _getIntersectors: function () {
-        var vector = this._clientToNDC(this.mouse2d);
+        var vector = this._clientToNDC(this._mouse2d);
         vector.z = 1;
 
         this.projector.unprojectVector(vector, this.camera);
@@ -175,16 +175,21 @@ WorldRenderer.prototype = {
         //clear previous
         if (this._highlighted) {
             this._highlighted.material.emissive.setHex(this._highlighted.origHex);
+            this._selected = null;
         }
 
         this._highlighted = obj;
 
         if (!obj) return;
+        this._selected = obj.userData.model;
         this._highlighted.origHex = obj.material.emissive.getHex();
         this._highlighted.material.emissive.setHex(0xff0000);
     },
 
     _updateRollovers: function () {
+        if (!this._mouseChange) return;
+        this._mouseChange = false;
+
         var intersections = this._getIntersectors(),
             intersector = this._getRealIntersector(intersections),
             pos;
@@ -198,9 +203,9 @@ WorldRenderer.prototype = {
                 this.cube.shadow.position = pos;
             }
 
-            this.location.x = pos.x / this.gridStepSize;
-            this.location.y = pos.y / this.gridStepSize;
-            this.location.z = pos.z / this.gridStepSize;
+            this._location.x = pos.x / this.gridStepSize;
+            this._location.y = pos.y / this.gridStepSize;
+            this._location.z = pos.z / this.gridStepSize;
         }
     },
 
@@ -210,6 +215,28 @@ WorldRenderer.prototype = {
         }
 
         this.renderer.render(this.scene, this.camera);
+    },
+
+    mouse2d: function (x, y) {
+        this._mouseChange = true;
+        this._mouse2d.x = x;
+        this._mouse2d.y = y;
+    },
+
+    location: function () {
+        if (this._mouseChange) {
+            this._updateRollovers();
+        }
+
+        return this._location;
+    },
+
+    selectedObject: function () {
+        if (this._mouseChange) {
+            this._updateRollovers();
+        }
+
+        return this._selected;
     },
 
     isPickingLocation: function() {
@@ -268,15 +295,15 @@ WorldRenderer.prototype = {
         c.position.x = loc.x * this.gridStepSize;
         c.position.y = loc.y * this.gridStepSize;
         c.position.z = loc.z * this.gridStepSize;
-        c.userData = {
-            type: 'room',
-            room: model
-        };
 
         var cube = new THREE.Mesh(this.cube.geometry,
                                   new THREE.MeshLambertMaterial({
                                       emissive: 0x22ff22
                                   }));
+        cube.userData = {
+            type: 'room',
+            model: model
+        };
         c.add(cube);
 
         var north = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
@@ -284,10 +311,6 @@ WorldRenderer.prototype = {
                                        emissive: 0x000000
                                    }));
         north.position.y = this.cubeSize / 1.5;
-        north.userData = {
-            type: 'exit',
-            exit: 'north'
-        };
         c.add(north);
 
         var east = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
@@ -296,10 +319,6 @@ WorldRenderer.prototype = {
                                    }));
         east.position.x = this.cubeSize / 1.5;
         east.rotation.z = Math.PI / 2;
-        east.userData = {
-            type: 'exit',
-            exit: 'east'
-        };
         c.add(east);
 
         var south = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
@@ -307,10 +326,6 @@ WorldRenderer.prototype = {
                                        emissive: 0x000000
                                    }));
         south.position.y = -this.cubeSize / 1.5;
-        south.userData = {
-            type: 'exit',
-            exit: 'south'
-        };
         c.add(south);
 
         var west = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
@@ -319,16 +334,25 @@ WorldRenderer.prototype = {
                                    }));
         west.position.x = -this.cubeSize / 1.5;
         west.rotation.z = Math.PI / 2;
-        west.userData = {
-            type: 'exit',
-            exit: 'west'
-        };
         c.add(west);
 
         this.scene.add(c);
 
         this.modelsToCubes[model] = c;
         this.cubesToModels[c] = model;
+    },
+
+    reset: function () {
+        var self = this;
+
+        Object.keys(this.cubesToModels)
+              .forEach(function (cube) {
+                  self.scene.remove(cube);
+              });
+
+        this.selectObjects();
+        this.modelsToCubes = {};
+        this.cubesToModels = {};
     }
 };
 

@@ -58,8 +58,7 @@ default Ember.View.extend({
             $el = this.get('$el');
 
         e.preventDefault();
-        gfx.mouse2d.x = e.clientX;
-        gfx.mouse2d.y = e.clientY;
+        gfx.mouse2d(e.clientX, e.clientY);
     },
 
     mouseDown: function() {
@@ -69,27 +68,15 @@ default Ember.View.extend({
     mouseUp: function(e) {
         if (!this.get('selecting')) return;
         var gfx = this.get('gfx');
-        gfx._updateRollovers();
 
         this.set('selecting', false);
-        var controller = this.get('controller'),
-            grid = gfx.location;
+        var controller = this.get('controller');
 
         if (gfx.isPickingLocation()) {
             gfx.lockLocation();
-            controller.send('setLocation', grid);
-        } else {
-            //assuming all visible rooms are loaded
-            var rooms = controller.store
-                                  .filter('room', function (room) {
-                                      var loc = room.get('location');
-                                      return loc.x === grid.x &&
-                                             loc.y === grid.y &&
-                                             loc.z === grid.z;
-                                  });
-
-            if (rooms.content.length !== 1) return;
-            controller.transitionToRoute('room', rooms.content[0]);
+            controller.send('setLocation', gfx.location());
+        } else if (gfx.selectedObject()){
+            controller.transitionToRoute('room', gfx.selectedObject());
         }
     },
 
