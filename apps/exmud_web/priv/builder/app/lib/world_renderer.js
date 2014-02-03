@@ -89,7 +89,7 @@ function WorldRenderer() {
     this.scene.add(plane);
     this.plane = plane;
 
-    this.state('selectingObjects');
+    this.selectObjects();
     this.animate();
 }
 
@@ -212,29 +212,35 @@ WorldRenderer.prototype = {
         this.renderer.render(this.scene, this.camera);
     },
 
-    state: function(state) {
-        this._state = state;
-
-        if (this.isPickingLocation()) {
-            this.cube.shadow.visible = true;
-        }
-
-        if (this.isSelectingObjects()) {
-            this.cube.shadow.visible = false;
-            this.cube.shadow.position.set(0,0,10000);
-        }
-    },
-
     isPickingLocation: function() {
         return this._state === 'pickingLocation';
+    },
+
+    pickLocation: function () {
+        this._state = 'pickingLocation';
+        this.cube.shadow.visible = true;
     },
 
     isLocationLocked: function() {
         return this._state === 'locationLocked';
     },
 
+    lockLocation: function () {
+        if (this._state !== 'pickingLocation') {
+            throw new Error('You can only lock the location when you were picking one');
+        }
+
+        this._state = 'locationLocked';
+    },
+
     isSelectingObjects: function() {
         return this._state === 'selectingObjects';
+    },
+
+    selectObjects: function () {
+        this._state = 'selectingObjects';
+        this.cube.shadow.visible = false;
+        this.cube.shadow.position.set(0,0,10000);
     },
 
     animate: function() {

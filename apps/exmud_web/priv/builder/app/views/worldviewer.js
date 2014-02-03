@@ -7,9 +7,9 @@ default Ember.View.extend({
         this.set('gfx', gfx);
 
         if (this.get('pickingLocation')) {
-            gfx.state('pickingLocation');
+            gfx.pickLocation();
         } else {
-            gfx.state('selectingObjects');
+            gfx.selectObjects();
         }
 
         this._super();
@@ -76,7 +76,7 @@ default Ember.View.extend({
             grid = gfx.location;
 
         if (gfx.isPickingLocation()) {
-            gfx.state('locationLocked');
+            gfx.lockLocation();
             controller.send('setLocation', grid);
         } else {
             //assuming all visible rooms are loaded
