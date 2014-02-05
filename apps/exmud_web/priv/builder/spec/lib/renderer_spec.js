@@ -1,18 +1,22 @@
 /*jshint expr: true */
 describe('world renderer', function () {
-    var worldRenderer = require('app/lib/world_renderer')['default'];
+    var worldRenderer = require('app/lib/world_renderer');
 
-    var renderer = worldRenderer();
+    var renderer = worldRenderer.create();
 
     beforeEach(function () {
-        renderer.reset();
         renderer.resize(500, 500);
     });
 
-    it('only initializes once', function () {
-        var renderer2 = worldRenderer();
+    afterEach(function () {
+        renderer.reset();
+    });
 
-        expect(renderer).to.equal(renderer2);
+    it('getRenderer only initializes once', function () {
+        var renderer1 = worldRenderer.getRenderer(),
+            renderer2 = worldRenderer.getRenderer();
+
+        expect(renderer1).to.equal(renderer2);
     });
 
     it('defaults to selecting objects', function () {

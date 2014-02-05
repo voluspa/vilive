@@ -1,9 +1,11 @@
+import { getRenderer } from 'app/lib/world_renderer';
+
 export
 default Ember.View.extend({
     classNames: ['world-viewer'],
 
     init: function() {
-        var gfx = require('app/lib/world_renderer')['default']();
+        var gfx = getRenderer();
         this.set('gfx', gfx);
 
         if (this.get('pickingLocation')) {
@@ -74,7 +76,7 @@ default Ember.View.extend({
 
         if (gfx.isPickingLocation()) {
             gfx.lockLocation();
-            controller.send('setLocation', gfx.location());
+            controller.set('location', gfx.location());
         } else if (gfx.selectedObject()){
             controller.transitionToRoute('room', gfx.selectedObject());
         }

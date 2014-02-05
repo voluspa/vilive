@@ -5,23 +5,16 @@ default Ember.Controller.extend({
     needs: 'world',
     world: Ember.computed.alias('controllers.world'),
 
-    location: function() {
-        var world = this.get('world'),
-            loc = world.get('lastLocation');
+    isNew: true,
 
-        if (!loc) return null;
+    location: Ember.computed.alias('world.location'),
 
-        return {
-            x: loc.x,
-            y: loc.y,
-            z: loc.z
-        };
-    }.property('world.lastLocation'),
-
-    needsLocation: function() {
-        if (this.get('location')) return false;
-        return true;
-    }.property('location'),
+    isInvalid: function() {
+        if (Ember.isEmpty(this.get('world.location'))) return true;
+        if (Ember.isEmpty(this.get('title'))) return true;
+        if (Ember.isEmpty(this.get('description'))) return true;
+        return false;
+    }.property('title', 'description', 'location'),
 
     actions: {
         save: function() {
@@ -37,20 +30,21 @@ default Ember.Controller.extend({
 
             newRoom.save()
                 .then(function() {
-                    Room.eachAttribute(function(name) {
-                        self.set(name, '');
-                    });
                     self.transitionToRoute('room', newRoom);
                 });
         },
 
         cancel: function() {
+            this.transitionToRoute('world');
+        },
+
+        reset: function () {
             var self = this;
 
+            this.get('world').send('reset');
             Room.eachAttribute(function(name) {
                 self.set(name, '');
             });
-            this.transitionToRoute('world');
         }
     }
 });

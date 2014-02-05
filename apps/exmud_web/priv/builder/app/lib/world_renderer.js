@@ -360,7 +360,12 @@ WorldRenderer.prototype = {
 var gfx = null;
 
 export
-default function() {
+function getRenderer() {
     if (gfx === null) gfx = new WorldRenderer();
     return gfx;
+}
+
+export
+function create() {
+    return new WorldRenderer();
 }

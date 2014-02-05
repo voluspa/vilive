@@ -6,6 +6,8 @@
  */
 
 describe('when no rooms exist', function() {
+    var renderer = require('app/lib/world_renderer').getRenderer();
+
     beforeEach(function(done) {
         setFixtures('room', []);
         visit('/').then(done);
@@ -13,6 +15,7 @@ describe('when no rooms exist', function() {
 
     afterEach(function() {
         App.reset();
+        renderer.reset();
     });
 
     it('displays help information', function() {
