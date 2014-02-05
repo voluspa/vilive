@@ -23,5 +23,6 @@
     "framework": "mocha+chai",
     "parallel": 4,
     "launch_in_dev": ["Chrome", "Firefox"],
-    "launch_in_ci": ["Chrome", "Firefox", "Safari"]
+    "launch_in_ci": ["Chrome", "Firefox", "Safari"],
+    "fail_on_zero_tests": true
 }
