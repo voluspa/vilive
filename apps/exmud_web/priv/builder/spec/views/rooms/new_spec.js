@@ -5,7 +5,7 @@
   App visit
  */
 
-describe('creating a new room', function() {
+describe('new room view', function() {
     var renderer = require('app/lib/world_renderer').getRenderer();
 
     function emptyInput(input) {
@@ -20,6 +20,11 @@ describe('creating a new room', function() {
 
     function findInForm(selector) {
         return find(selector, findForm());
+    }
+
+    function setLocation() {
+        renderer.mouse2d(20, 25);
+        click('div.world-viewer');
     }
 
     beforeEach(function() {
@@ -54,59 +59,49 @@ describe('creating a new room', function() {
     describe('when filling out the room details', function () {
         var save;
 
-        function setLocation() {
-            renderer.mouse2d(20, 25);
-            click('div.world-viewer');
-        }
-
         beforeEach(function () {
             save = findInForm('[name=save]')[0];
         });
 
-        describe('with room title and description given', function () {
-            beforeEach(function (){
-                fillIn('#roomTitle', 'A cold creepy cave');
-                fillIn('#roomDescription', "It's so creepy.");
-            });
 
-            it('disables the save button when there is no location', function () {
+        it('disables the save button when there is no location', function (done) {
+            fillIn('#roomTitle', 'A cold creepy cave');
+            fillIn('#roomDescription', "It's so creepy.");
+            wait()
+            .then(function () {
                 expect(save.disabled).to.be.true;
+                done();
             });
         });
 
-
-        describe('with the location and title given', function () {
-            beforeEach(function () {
-                setLocation();
-                fillIn('#roomTitle', 'A cold creepy cave');
-            });
-
-            it('disables the save button when there is no title', function () {
+        it('disables the save button when there is no title', function (done) {
+            setLocation();
+            fillIn('#roomTitle', 'A cold creepy cave');
+            wait()
+            .then(function () {
                 expect(save.disabled).to.be.true;
+                done();
             });
         });
 
-        describe('with the location and description given', function () {
-            beforeEach(function () {
-                setLocation();
-                fillIn('#roomDescription', "It's so creepy.");
-            });
-
-            it('disables the save button when there is no description', function () {
+        it('disables the save button when there is no description', function (done) {
+            setLocation();
+            fillIn('#roomDescription', "It's so creepy.");
+            wait()
+            .then(function () {
                 expect(save.disabled).to.be.true;
+                done();
             });
         });
 
-
-        describe('with title, description, and location given', function() {
-            beforeEach(function () {
-                setLocation();
-                fillIn('#roomTitle', 'A cold creepy cave');
-                fillIn('#roomDescription', "It's so creepy.");
-            });
-
-            it('enables the save button when the required fields are provided', function () {
+        it('enables the save button when the required fields are provided', function (done) {
+            setLocation();
+            fillIn('#roomTitle', 'A cold creepy cave');
+            fillIn('#roomDescription', "It's so creepy.");
+            wait()
+            .then(function () {
                 expect(save.disabled).to.be.false;
+                done();
             });
         });
     });
@@ -118,15 +113,11 @@ describe('creating a new room', function() {
             visit('/');
         });
 
-        afterEach(function() {
-            App.reset();
-        });
-
         it('removes the form', function() {
             expect(findForm().length).to.be.eql(0);
         });
 
-        describe('then creating a new room afterwards', function() {
+        describe('then returning to the new room form', function() {
             beforeEach(function() {
                 visit('/rooms/new');
             });
@@ -149,15 +140,11 @@ describe('creating a new room', function() {
             click('[name=cancel]');
         });
 
-        afterEach(function() {
-            App.reset();
-        });
-
         it('removes the form', function() {
             expect(findForm().length).to.be.eql(0);
         });
 
-        describe('then creating a new room afterwards', function() {
+        describe('then returning to the new room form', function() {
             beforeEach(function() {
                 visit('/rooms/new');
             });
@@ -170,6 +157,34 @@ describe('creating a new room', function() {
                 expect(roomDescription).to.be.an.instanceof(HTMLTextAreaElement);
                 expect(roomDescription.value).to.be.empty;
             });
+        });
+    });
+
+    describe('when saving', function () {
+        var previousRoomCount,
+            store;
+
+        beforeEach(function(done) {
+            store = getStore();
+            store.find('room')
+                 .then(function (data) {
+                    previousRoomCount = data.content.length;
+
+                    setLocation();
+                    fillIn('#roomTitle', 'A cold creepy cave');
+                    fillIn('#roomDescription', "It's so creepy.");
+                    click('[name=save]');
+                    wait().then(done);
+                 });
+
+        });
+
+        it('increases the number of rooms', function (done) {
+            store.find('room')
+                 .then(function (data) {
+                    expect(data.content.length).to.be.above(previousRoomCount);
+                    done();
+                 });
         });
     });
 });

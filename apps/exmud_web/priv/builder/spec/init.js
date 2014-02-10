@@ -1,3 +1,9 @@
+//quick hack so that the test page isn't doing a bunch of flow/draw for the
+//views popping in and out of view
+var customTestStyle = document.createElement('style');
+customTestStyle.innerText = ".ember-view { display: none; }";
+document.getElementsByTagName('head')[0].appendChild(customTestStyle);
+
 Ember.Test.adapter = Ember.Test.MochaAdapter.create();
 
 var router = require('app/router')['default'].reopen({
@@ -7,13 +13,16 @@ var router = require('app/router')['default'].reopen({
 
 require('app/adapters/application')['default'] = DS.FixtureAdapter.extend({});
 
-function setFixtures(model, fixtures) {
-    require('app/models/' + model)['default'].FIXTURES = fixtures;
-}
-
 window.App = require('app/application')['default'].create();
 App.setupForTesting();
 App.injectTestHelpers();
 
 window.expect = chai.expect;
 
+function setFixtures(model, fixtures) {
+    require('app/models/' + model)['default'].FIXTURES = fixtures;
+}
+
+function getStore() {
+    return App.__container__.lookup('store:main');
+}
