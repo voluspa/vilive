@@ -69,20 +69,6 @@ module.exports = function(grunt) {
                 options: { jshintrc: '.jshintrc'}
             }
         },
-        jsbeautifier: {
-            app: {
-                src: ['app/**/*.js'],
-                options: {
-                    config: '.jsbeautifyrc'
-                }
-            },
-            spec: {
-                src: ['spec/**/*.js'],
-                options: {
-                    config: 'spec/.jsbeautifyrc'
-                }
-            }
-        },
         less: {
             dev: {
                 options: {
@@ -144,7 +130,6 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-express-server');
-    grunt.loadNpmTasks('grunt-contrib-testem');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-less');
@@ -152,7 +137,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-es6-module-transpiler');
     grunt.loadNpmTasks('grunt-notify');
     grunt.loadNpmTasks('grunt-file-blocks');
-    grunt.loadNpmTasks('grunt-jsbeautifier');
 
     grunt.registerTask('default', [
         'build:dev'
@@ -160,13 +144,11 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build:dev', [
         'clean',
-        'jsbeautifier',
         'jshint',
         'less:dev',
         'transpile',
         'emberTemplates:dev',
-        'fileblocks:dev',
-        'testem:ci:dev'
+        'fileblocks:dev'
     ]);
 
     grunt.registerTask('dev', 'Get back to work!', [
