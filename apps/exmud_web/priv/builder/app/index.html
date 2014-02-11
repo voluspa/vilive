@@ -14,7 +14,7 @@
 </head>
 <body>
 
-    <!-- vendor libraries need to be manually added to testem grunt task config -->
+    <!-- vendor libraries need to be manually added to testem config -->
     <script src="/vendor/jquery/jquery.js"></script>
     <script src="/vendor/handlebars/handlebars.js"></script>
     <script src="/vendor/ember/ember.js"></script>
@@ -29,7 +29,7 @@
     <!-- endfileblock -->
 
     <script>
-        window.App = require('app/application')['default'].create();
+        window.App = require('app/app')['default'].create();
     </script>
 </body>
 </html>

@@ -13,7 +13,7 @@ var router = require('app/router')['default'].reopen({
 
 require('app/adapters/application')['default'] = DS.FixtureAdapter.extend({});
 
-window.App = require('app/application')['default'].create();
+window.App = require('app/app')['default'].create();
 App.setupForTesting();
 App.injectTestHelpers();
 
