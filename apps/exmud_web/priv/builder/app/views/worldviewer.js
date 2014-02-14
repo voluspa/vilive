@@ -4,6 +4,8 @@ export
 default Ember.View.extend({
     classNames: ['world-viewer'],
 
+    pickingLocation: Ember.computed.alias('controller.pickingLocation'),
+
     init: function() {
         var gfx = getRenderer();
         this.set('gfx', gfx);
@@ -69,16 +71,17 @@ default Ember.View.extend({
 
     mouseUp: function(e) {
         if (!this.get('selecting')) return;
-        var gfx = this.get('gfx');
+        var gfx = this.get('gfx'),
+            controller = this.get('controller'),
+            selectedObject = gfx.selectedObject();
 
         this.set('selecting', false);
-        var controller = this.get('controller');
 
         if (gfx.isPickingLocation()) {
             gfx.lockLocation();
             controller.set('location', gfx.location());
-        } else if (gfx.selectedObject()){
-            controller.transitionToRoute('room', gfx.selectedObject());
+        } else if (selectedObject){
+            controller.send('selected', selectedObject);
         }
     },
 

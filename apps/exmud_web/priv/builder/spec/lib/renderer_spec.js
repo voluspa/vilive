@@ -60,7 +60,7 @@ describe('world renderer', function () {
 
         it('returns the room as selected when the mouse is over it', function () {
             renderer.mouse2d(259, 254);
-            expect(renderer.selectedObject()).to.equal(room);
+            expect(renderer.selectedObject().model).to.equal(room);
         });
     });
 

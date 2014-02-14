@@ -6,12 +6,13 @@ var Router = Ember.Router.extend({
 Router.map(function() {
     this.route('world');
 
-    this.route('rooms.new', {
-        path: '/rooms/new'
+    this.resource('exit', { path: '/room/:room_id/exit' }, function () {
+        this.route('edit', { path: '/:exit_direction' });
     });
 
-    this.resource('room', {
-        path: '/room/:room_id'
+    this.resource('room', function () {
+        this.route('new');
+        this.route('edit', { path: '/:room_id' });
     });
 });
 

@@ -1,3 +1,5 @@
+import Room from 'app/models/room';
+
 function WorldRenderer() {
     var self = this;
 
@@ -181,7 +183,7 @@ WorldRenderer.prototype = {
         this._highlighted = obj;
 
         if (!obj) return;
-        this._selected = obj.userData.model;
+        this._selected = obj.userData;
         this._highlighted.origHex = obj.material.emissive.getHex();
         this._highlighted.material.emissive.setHex(0xff0000);
     },
@@ -287,14 +289,18 @@ WorldRenderer.prototype = {
     },
 
     addRoom: function(model) {
-        var c = this.modelsToCubes[model];
-        if (c) return;
+        var cubeSize = this.cubeSize,
+            gridStepSize = this.gridStepSize,
+            c = this.modelsToCubes[model],
+            loc;
 
+        if (c) return;
         c = new THREE.Object3D();
-        var loc = model.get('location');
-        c.position.x = loc.x * this.gridStepSize;
-        c.position.y = loc.y * this.gridStepSize;
-        c.position.z = loc.z * this.gridStepSize;
+        loc = model.get('location');
+
+        c.position.x = loc.x * gridStepSize;
+        c.position.y = loc.y * gridStepSize;
+        c.position.z = loc.z * gridStepSize;
 
         var cube = new THREE.Mesh(this.cube.geometry,
                                   new THREE.MeshLambertMaterial({
@@ -306,35 +312,40 @@ WorldRenderer.prototype = {
         };
         c.add(cube);
 
-        var north = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
-                                   new THREE.MeshLambertMaterial({
-                                       emissive: 0x000000
-                                   }));
-        north.position.y = this.cubeSize / 1.5;
-        c.add(north);
+        Room.EXITS.forEach(function (direction) {
+            var exit = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
+                                       new THREE.MeshLambertMaterial({
+                                           emissive: 0x000000
+                                       }));
 
-        var east = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
-                                   new THREE.MeshLambertMaterial({
-                                       emissive: 0x000000
-                                   }));
-        east.position.x = this.cubeSize / 1.5;
-        east.rotation.z = Math.PI / 2;
-        c.add(east);
+            exit.userData = {
+                type: 'exit',
+                model: null, //an 'open' exit
+                direction: direction,
+                room: model
+            };
 
-        var south = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
-                                   new THREE.MeshLambertMaterial({
-                                       emissive: 0x000000
-                                   }));
-        south.position.y = -this.cubeSize / 1.5;
-        c.add(south);
+            //would be neat to map direction to degrees and calculate everything
+            switch(direction) {
+                case 'north':
+                    exit.position.y = cubeSize / 1.5;
+                    break;
+                case 'east':
+                    exit.position.x = cubeSize / 1.5;
+                    exit.rotation.z = Math.PI / 2;
+                    break;
+                case 'south':
+                    exit.position.y = -cubeSize / 1.5;
+                    break;
+                case 'west':
+                    exit.position.x = -cubeSize / 1.5;
+                    exit.rotation.z = Math.PI / 2;
+                    break;
+            }
 
-        var west = new THREE.Mesh(new THREE.CubeGeometry(5, 10, 5),
-                                   new THREE.MeshLambertMaterial({
-                                       emissive: 0x000000
-                                   }));
-        west.position.x = -this.cubeSize / 1.5;
-        west.rotation.z = Math.PI / 2;
-        c.add(west);
+            c.add(exit);
+        });
+
 
         this.scene.add(c);
 

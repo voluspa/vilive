@@ -30,7 +30,7 @@ default Ember.Controller.extend({
 
             newRoom.save()
                 .then(function() {
-                    self.transitionToRoute('room', newRoom);
+                    self.transitionToRoute('room.edit', newRoom);
                 });
         },
 
