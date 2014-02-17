@@ -10,16 +10,18 @@ default Ember.ArrayController.extend({
 
     actions: {
         selected: function (obj) {
-            var model = obj.model;
+            var route = 'room.edit',
+                model = obj.model;
 
             if (obj.model === null && obj.type === 'exit') {
+                route = 'exit.edit';
                 model = this.store.createRecord('exit', {
                     direction: obj.direction,
                     from: obj.room
                 });
             }
 
-            this.transitionToRoute(obj.type + '.edit', model);
+            this.transitionToRoute(route, model);
         },
 
         reset: function() {

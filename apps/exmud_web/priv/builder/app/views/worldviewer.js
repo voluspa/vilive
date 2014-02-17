@@ -3,21 +3,25 @@ import { getRenderer } from 'app/lib/world_renderer';
 export
 default Ember.View.extend({
     classNames: ['world-viewer'],
-
-    pickingLocation: Ember.computed.alias('controller.pickingLocation'),
+    rooms: Ember.computed.alias('controller.model'),
 
     init: function() {
         var gfx = getRenderer();
         this.set('gfx', gfx);
 
-        if (this.get('pickingLocation')) {
+        this.setState();
+
+        this._super();
+    },
+
+    setState: function () {
+        var gfx = this.get('gfx');
+        if (this.get('controller.pickingLocation')) {
             gfx.pickLocation();
         } else {
             gfx.selectObjects();
         }
-
-        this._super();
-    },
+    }.observes('controller.pickingLocation'),
 
     didInsertElement: function() {
         var self = this,
@@ -49,13 +53,12 @@ default Ember.View.extend({
 
     renderRooms: function() {
         var self = this,
-            rooms = this.get('controller')
-                .get('model');
+            rooms = this.get('rooms');
 
         rooms.forEach(function(room) {
             self.get('gfx').addRoom(room);
         });
-    }.observes('controller.model').on('init'),
+    }.observes('rooms.[]').on('init'),
 
     mouseMove: function(e) {
         var gfx = this.get('gfx'),
