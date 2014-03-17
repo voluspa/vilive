@@ -1,4 +1,4 @@
-var Room = require('app/models/room')['default'];
+import Room from 'app/models/room';
 
 export
 default Ember.Controller.extend({

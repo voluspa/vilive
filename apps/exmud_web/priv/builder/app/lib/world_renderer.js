@@ -289,10 +289,12 @@ WorldRenderer.prototype = {
     },
 
     focus: function(model) {
+        if (!model) return this._focus;
+
         if (this._focus) {
             this._focus.traverse(function (obj) {
                 if (obj.userData.type === 'exit') {
-                    obj.visible = true;
+                    obj.visible = false;
                 }
             });
         }
@@ -300,7 +302,7 @@ WorldRenderer.prototype = {
         this._focus = null;
 
         var c = this.modelsToCubes[model];
-        if (!c) return;
+        if (!c) return this._focus;
 
         this._focus = c;
         this._focus.traverse(function (obj) {
@@ -309,6 +311,8 @@ WorldRenderer.prototype = {
             }
         });
         this.camera.lookAt(c.position);
+
+        return this._focus;
     },
 
     addRoom: function(model) {

@@ -64,6 +64,10 @@ describe('the world view', function () {
             it('displays the room form', function () {
                 expect(find('form.room')).to.have.length(1);
             });
+
+            it('sets focus on the room', function () {
+                expect(renderer.focus()).to.not.be.null;
+            });
         });
     });
 });
