@@ -350,24 +350,42 @@ WorldRenderer.prototype = {
                 type: 'exit',
                 model: null, //an 'open' exit
                 direction: direction,
-                room: model
+                room: model,
+                reverse: null, //reverse of east is west, etc
+                target: {
+                    x: c.position.x,
+                    y: c.position.y,
+                    z: c.position.z
+                }
             };
 
             //would be neat to map direction to degrees and calculate everything
             switch(direction) {
                 case 'north':
                     exit.position.y = cubeSize / 1.5;
+
+                    exit.userData.target.y += 1;
+                    exit.userData.reverse = 'south';
                     break;
                 case 'east':
                     exit.position.x = cubeSize / 1.5;
                     exit.rotation.z = Math.PI / 2;
+
+                    exit.userData.target.x += 1;
+                    exit.userData.reverse = 'west';
                     break;
                 case 'south':
                     exit.position.y = -cubeSize / 1.5;
+
+                    exit.userData.target.y -= 1;
+                    exit.userData.reverse = 'north';
                     break;
                 case 'west':
                     exit.position.x = -cubeSize / 1.5;
                     exit.rotation.z = Math.PI / 2;
+
+                    exit.userData.target.x -= 1;
+                    exit.userData.reverse = 'east';
                     break;
             }
 

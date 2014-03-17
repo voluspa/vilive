@@ -1,9 +1,10 @@
 import Room from 'app/models/room';
 
-export
-default Ember.Controller.extend({
+var NewRoomController = Ember.Controller.extend({
     needs: 'world',
     world: Ember.computed.alias('controllers.world'),
+
+    queryParams: ['x', 'y', 'z', 'exit'],
 
     location: Ember.computed.alias('world.location'),
 
@@ -46,3 +47,5 @@ default Ember.Controller.extend({
         }
     }
 });
+
+export default NewRoomController;
