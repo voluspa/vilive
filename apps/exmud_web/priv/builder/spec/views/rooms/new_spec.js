@@ -28,7 +28,7 @@ describe('new room view', function() {
     }
 
     beforeEach(function() {
-        visit('/rooms/new');
+        visit('/room/new');
     });
 
     afterEach(function() {
@@ -119,7 +119,7 @@ describe('new room view', function() {
 
         describe('then returning to the new room form', function() {
             beforeEach(function() {
-                visit('/rooms/new');
+                visit('/room/new');
             });
 
             it('all the fields are cleared', function() {
@@ -146,7 +146,7 @@ describe('new room view', function() {
 
         describe('then returning to the new room form', function() {
             beforeEach(function() {
-                visit('/rooms/new');
+                visit('/room/new');
             });
 
             it('all the fields are cleared', function() {

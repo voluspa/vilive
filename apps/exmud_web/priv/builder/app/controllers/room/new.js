@@ -5,8 +5,6 @@ default Ember.Controller.extend({
     needs: 'world',
     world: Ember.computed.alias('controllers.world'),
 
-    isNew: true,
-
     location: Ember.computed.alias('world.location'),
 
     isInvalid: function() {

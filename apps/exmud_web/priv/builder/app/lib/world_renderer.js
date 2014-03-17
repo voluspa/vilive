@@ -288,6 +288,29 @@ WorldRenderer.prototype = {
         this.offset = this.$el.offset();
     },
 
+    focus: function(model) {
+        if (this._focus) {
+            this._focus.traverse(function (obj) {
+                if (obj.userData.type === 'exit') {
+                    obj.visible = true;
+                }
+            });
+        }
+
+        this._focus = null;
+
+        var c = this.modelsToCubes[model];
+        if (!c) return;
+
+        this._focus = c;
+        this._focus.traverse(function (obj) {
+            if (obj.userData.type === 'exit') {
+                obj.visible = true;
+            }
+        });
+        this.camera.lookAt(c.position);
+    },
+
     addRoom: function(model) {
         var cubeSize = this.cubeSize,
             gridStepSize = this.gridStepSize,
@@ -317,6 +340,7 @@ WorldRenderer.prototype = {
                                        new THREE.MeshLambertMaterial({
                                            emissive: 0x000000
                                        }));
+            exit.visible = false;
 
             exit.userData = {
                 type: 'exit',

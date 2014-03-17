@@ -23,6 +23,11 @@ default Ember.View.extend({
         }
     }.observes('controller.pickingLocation'),
 
+    focus: function () {
+        var gfx = this.get('gfx');
+        gfx.focus(this.get('controller.focus'));
+    }.observes('controller.focus'),
+
     didInsertElement: function() {
         var self = this,
             $el = $(this.get('element')),
