@@ -1,4 +1,4 @@
-import Resolver from 'resolver';
+import Resolver from 'ember/resolver';
 
 Ember.ENV.LOG_MODULE_RESOLVER = true;
 

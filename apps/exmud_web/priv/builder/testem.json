@@ -5,7 +5,7 @@
         "spec/**/*_spec.js"
     ],
     "serve_files": [
-        "vendor/jquery/jquery.js",
+        "vendor/jquery/dist/jquery.js",
         "vendor/handlebars/handlebars.js",
         "vendor/ember/ember.js",
         "vendor/ember-data/ember-data.js",
