@@ -6,6 +6,5 @@ default Ember.Route.extend({
 
     setupController: function(controller, model) {
         controller.set('model', model);
-        controller.send('reset');
     }
 });

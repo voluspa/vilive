@@ -1,12 +1,16 @@
 export
 default Ember.Route.extend({
-    setupController: function(controller) {
+    setupController: function(controller, query) {
         controller.send('reset');
-        controller.get('world').set('pickingLocation', true);
         this.set('controller', controller);
+
+        if (!query.loc || query.loc === 'undefined') return;
+        var loc = JSON.parse(query.loc);
+        controller.set('world.location', loc);
     },
 
     deactivate: function() {
         this.get('controller').send('reset');
+        this.set('controller.world.pickingLocation', false);
     }
 });

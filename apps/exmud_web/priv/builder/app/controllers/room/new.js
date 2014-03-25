@@ -4,7 +4,7 @@ var NewRoomController = Ember.Controller.extend({
     needs: 'world',
     world: Ember.computed.alias('controllers.world'),
 
-    queryParams: ['x', 'y', 'z', 'exit'],
+    queryParams: ['loc', 'exit'],
 
     location: Ember.computed.alias('world.location'),
 
@@ -13,12 +13,12 @@ var NewRoomController = Ember.Controller.extend({
         if (Ember.isEmpty(this.get('title'))) return true;
         if (Ember.isEmpty(this.get('description'))) return true;
         return false;
-    }.property('title', 'description', 'location'),
+    }.property('title', 'description', 'world.location'),
 
     actions: {
         save: function() {
             var self = this,
-                loc = this.get('location'),
+                loc = this.get('world.location'),
                 data = {};
 
             Room.eachAttribute(function(name) {
@@ -40,9 +40,9 @@ var NewRoomController = Ember.Controller.extend({
         reset: function () {
             var self = this;
 
-            this.get('world').send('reset');
+            this.set('world.pickingLocation', true);
             Room.eachAttribute(function(name) {
-                self.set(name, '');
+                self.set(name, null);
             });
         }
     }

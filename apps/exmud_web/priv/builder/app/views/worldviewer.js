@@ -18,10 +18,13 @@ default Ember.View.extend({
         var gfx = this.get('gfx');
         if (this.get('controller.pickingLocation')) {
             gfx.pickLocation();
+            if (this.get('controller.location')) {
+                gfx.lockLocation();
+            }
         } else {
             gfx.selectObjects();
         }
-    }.observes('controller.pickingLocation'),
+    }.observes('controller.pickingLocation', 'controller.location'),
 
     focus: function () {
         var gfx = this.get('gfx');

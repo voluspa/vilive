@@ -21,9 +21,7 @@ default Ember.ArrayController.extend({
             if (obj.model === null && obj.type === 'exit') {
                 route = 'room.new';
                 query = {
-                    x: obj.target.x,
-                    y: obj.target.y,
-                    z: obj.target.z,
+                    loc: JSON.stringify(obj.target),
                     exit: obj.reverse
                 };
 
@@ -31,11 +29,6 @@ default Ember.ArrayController.extend({
             }
 
             return this.transitionToRoute(route, model);
-        },
-
-        reset: function() {
-            this.set('pickingLocation', false);
-            this.set('location', null);
         }
     }
 });
