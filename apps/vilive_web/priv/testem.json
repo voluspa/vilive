@@ -1,0 +1,22 @@
+{
+    "src_files": [
+    ],
+    "serve_files": [
+        "vendor/jquery/dist/jquery.js",
+        "vendor/handlebars/handlebars.js",
+        "vendor/ember/ember.js",
+        "vendor/ember-data/ember-data.js",
+        "vendor/ember-mocha-adapter/adapter.js",
+        "vendor/ember-loader/loader.js",
+        "vendor/ember-resolver/dist/ember-resolver.js",
+        "vendor/threejs/build/three.js",
+        "vendor/OrbitControls.js",
+    ],
+    "host": "127.0.0.1",
+    "growl": true,
+    "framework": "mocha+chai",
+    "parallel": 4,
+    "launch_in_dev": ["Chrome", "Firefox"],
+    "launch_in_ci": ["Chrome", "Firefox", "Safari"],
+    "fail_on_zero_tests": true
+}
