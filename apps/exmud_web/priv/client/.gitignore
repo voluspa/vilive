@@ -1,5 +1,0 @@
-.connect.lock
-_build
-node_modules
-testem.log
-vendor

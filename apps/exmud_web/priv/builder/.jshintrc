@@ -1,7 +1,0 @@
-{
-    "predef": [
-        "$",
-        "Ember"
-    ],
-    "esnext": true
-}
