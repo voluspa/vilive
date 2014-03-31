@@ -5,7 +5,7 @@
  *            Portions Copyright 2008-2011 Apple Inc. All rights reserved.
  * @license   Licensed under MIT license
  *            See https://raw.github.com/emberjs/ember.js/master/LICENSE
- * @version   1.6.0-beta.1+canary.6c27deea
+ * @version   1.6.0-beta.1+canary.24b19e51
  */
 
 
@@ -1579,7 +1579,7 @@ define("ember-metal/computed",
       // the cached value set by the setter
       if (this._cacheable && this._suspended !== obj) {
         var meta = metaFor(obj);
-        if (meta.cache !== undefined) {
+        if (meta.cache[keyName] !== undefined) {
           meta.cache[keyName] = undefined;
           removeDependentKeys(this, obj, keyName, meta);
         }
@@ -2394,7 +2394,6 @@ define("ember-metal/computed",
       computed.reads = computed.oneWay;
     }
 
-    
     /**
       Where `computed.oneWay` provides oneWay bindings, `computed.readOnly` provides
       a readOnly one way binding. Very often when using `computed.oneWay` one does
@@ -2438,7 +2437,6 @@ define("ember-metal/computed",
         return get(this, dependentKey);
       }).readOnly();
     };
-    
     /**
       A computed property that acts like a standard getter and setter,
       but returns the value at the provided `defaultPath` if the
@@ -2505,7 +2503,7 @@ define("ember-metal/core",
 
       @class Ember
       @static
-      @version 1.6.0-beta.1+canary.6c27deea
+      @version 1.6.0-beta.1+canary.24b19e51
     */
 
     if ('undefined' === typeof Ember) {
@@ -2532,10 +2530,10 @@ define("ember-metal/core",
     /**
       @property VERSION
       @type String
-      @default '1.6.0-beta.1+canary.6c27deea'
+      @default '1.6.0-beta.1+canary.24b19e51'
       @static
     */
-    Ember.VERSION = '1.6.0-beta.1+canary.6c27deea';
+    Ember.VERSION = '1.6.0-beta.1+canary.24b19e51';
 
     /**
       Standard environmental variables. You can define these in a global `EmberENV`
@@ -3705,35 +3703,31 @@ define("ember-metal/is_blank",
     // deprecateFunc
     var isEmpty = __dependency2__["default"];
 
-    var isBlank;
+    /**
+      A value is blank if it is empty or a whitespace string.
 
-    
-      /**
-        A value is blank if it is empty or a whitespace string.
+      ```javascript
+      Ember.isBlank();                // true
+      Ember.isBlank(null);            // true
+      Ember.isBlank(undefined);       // true
+      Ember.isBlank('');              // true
+      Ember.isBlank([]);              // true
+      Ember.isBlank('\n\t');          // true
+      Ember.isBlank('  ');            // true
+      Ember.isBlank({});              // false
+      Ember.isBlank('\n\t Hello');    // false
+      Ember.isBlank('Hello world');   // false
+      Ember.isBlank([1,2,3]);         // false
+      ```
 
-        ```javascript
-        Ember.isBlank();                // true
-        Ember.isBlank(null);            // true
-        Ember.isBlank(undefined);       // true
-        Ember.isBlank('');              // true
-        Ember.isBlank([]);              // true
-        Ember.isBlank('\n\t');          // true
-        Ember.isBlank('  ');            // true
-        Ember.isBlank({});              // false
-        Ember.isBlank('\n\t Hello');    // false
-        Ember.isBlank('Hello world');   // false
-        Ember.isBlank([1,2,3]);         // false
-        ```
-
-        @method isBlank
-        @for Ember
-        @param {Object} obj Value to test
-        @return {Boolean}
+      @method isBlank
+      @for Ember
+      @param {Object} obj Value to test
+      @return {Boolean}
       */
-      isBlank = function(obj) {
-        return isEmpty(obj) || (typeof obj === 'string' && obj.match(/\S/) === null);
-      };
-    
+    function isBlank(obj) {
+      return isEmpty(obj) || (typeof obj === 'string' && obj.match(/\S/) === null);
+    };
 
     __exports__["default"] = isBlank;
   });
@@ -14728,18 +14722,15 @@ define("ember-runtime/ext/string",
 
     var Ember = __dependency1__["default"];
     // Ember.EXTEND_PROTOTYPES, Ember.assert, Ember.FEATURES
-    var EmberStringUtils = __dependency2__["default"];
-
-    var fmt        = EmberStringUtils.fmt,
-        w          = EmberStringUtils.w,
-        loc        = EmberStringUtils.loc,
-        camelize   = EmberStringUtils.camelize,
-        decamelize = EmberStringUtils.decamelize,
-        dasherize  = EmberStringUtils.dasherize,
-        underscore = EmberStringUtils.underscore,
-        capitalize = EmberStringUtils.capitalize,
-        classify   = EmberStringUtils.classify;
-
+    var fmt = __dependency2__.fmt;
+    var w = __dependency2__.w;
+    var loc = __dependency2__.loc;
+    var camelize = __dependency2__.camelize;
+    var decamelize = __dependency2__.decamelize;
+    var dasherize = __dependency2__.dasherize;
+    var underscore = __dependency2__.underscore;
+    var capitalize = __dependency2__.capitalize;
+    var classify = __dependency2__.classify;
     var StringPrototype = String.prototype;
 
     if (Ember.EXTEND_PROTOTYPES === true || Ember.EXTEND_PROTOTYPES.String) {
@@ -15286,8 +15277,7 @@ define("ember-runtime/mixins/array",
 
       You can use the methods defined in this module to access and modify array
       contents in a KVO-friendly way. You can also be notified whenever the
-      membership of an array changes by changing the syntax of the property to
-      `.observes('*myProperty.[]')`.
+      membership of an array changes by using `.observes('myArray.[]')`.
 
       To support `Ember.Array` in your own class, you must override two
       primitives to use it: `replace()` and `objectAt()`.
@@ -15747,7 +15737,7 @@ define("ember-runtime/mixins/copyable",
     var required = __dependency3__.required;
     var Freezable = __dependency4__.Freezable;
     var Mixin = __dependency3__.Mixin;
-    var EmberStringUtils = __dependency5__["default"];
+    var fmt = __dependency5__.fmt;
     var EmberError = __dependency6__["default"];
 
 
@@ -15796,7 +15786,7 @@ define("ember-runtime/mixins/copyable",
         if (Freezable && Freezable.detect(this)) {
           return get(this, 'isFrozen') ? this : this.copy().freeze();
         } else {
-          throw new EmberError(EmberStringUtils.fmt("%@ does not support freezing", [this]));
+          throw new EmberError(fmt("%@ does not support freezing", [this]));
         }
       }
     });
@@ -17234,7 +17224,7 @@ define("ember-runtime/mixins/mutable_array",
     // CONSTANTS
     //
 
-    var OUT_OF_RANGE_EXCEPTION = "Index out of range" ;
+    var OUT_OF_RANGE_EXCEPTION = "Index out of range";
     var EMPTY = [];
 
     // ..........................................................
@@ -17290,7 +17280,7 @@ define("ember-runtime/mixins/mutable_array",
       replace: required(),
 
       /**
-        Remove all elements from self. This is useful if you
+        Remove all elements from the array. This is useful if you
         want to reuse an existing array without having to recreate it.
 
         ```javascript
@@ -17323,12 +17313,12 @@ define("ember-runtime/mixins/mutable_array",
         @method insertAt
         @param {Number} idx index of insert the object at.
         @param {Object} object object to insert
-        @return this
+        @return {Ember.Array} receiver
       */
       insertAt: function(idx, object) {
-        if (idx > get(this, 'length')) throw new EmberError(OUT_OF_RANGE_EXCEPTION) ;
-        this.replace(idx, 0, [object]) ;
-        return this ;
+        if (idx > get(this, 'length')) throw new EmberError(OUT_OF_RANGE_EXCEPTION);
+        this.replace(idx, 0, [object]);
+        return this;
       },
 
       /**
@@ -17348,7 +17338,7 @@ define("ember-runtime/mixins/mutable_array",
         @method removeAt
         @param {Number} start index, start of range
         @param {Number} len length of passing range
-        @return {Object} receiver
+        @return {Ember.Array} receiver
       */
       removeAt: function(start, len) {
         if ('number' === typeof start) {
@@ -17362,7 +17352,7 @@ define("ember-runtime/mixins/mutable_array",
           this.replace(start, len, EMPTY);
         }
 
-        return this ;
+        return this;
       },
 
       /**
@@ -17377,10 +17367,10 @@ define("ember-runtime/mixins/mutable_array",
 
         @method pushObject
         @param {*} obj object to push
-        @return The same obj passed as param
+        @return object same object passed as a param
       */
       pushObject: function(obj) {
-        this.insertAt(get(this, 'length'), obj) ;
+        this.insertAt(get(this, 'length'), obj);
         return obj;
       },
 
@@ -17419,12 +17409,12 @@ define("ember-runtime/mixins/mutable_array",
         @return object
       */
       popObject: function() {
-        var len = get(this, 'length') ;
-        if (len === 0) return null ;
+        var len = get(this, 'length');
+        if (len === 0) return null;
 
-        var ret = this.objectAt(len-1) ;
-        this.removeAt(len-1, 1) ;
-        return ret ;
+        var ret = this.objectAt(len-1);
+        this.removeAt(len-1, 1);
+        return ret;
       },
 
       /**
@@ -17441,10 +17431,10 @@ define("ember-runtime/mixins/mutable_array",
         @return object
       */
       shiftObject: function() {
-        if (get(this, 'length') === 0) return null ;
-        var ret = this.objectAt(0) ;
-        this.removeAt(0) ;
-        return ret ;
+        if (get(this, 'length') === 0) return null;
+        var ret = this.objectAt(0);
+        this.removeAt(0);
+        return ret;
       },
 
       /**
@@ -17459,11 +17449,11 @@ define("ember-runtime/mixins/mutable_array",
 
         @method unshiftObject
         @param {*} obj object to unshift
-        @return The same obj passed as param
+        @return object same object passed as a param
       */
       unshiftObject: function(obj) {
-        this.insertAt(0, obj) ;
-        return obj ;
+        this.insertAt(0, obj);
+        return obj;
       },
 
       /**
@@ -17527,18 +17517,46 @@ define("ember-runtime/mixins/mutable_array",
       // IMPLEMENT Ember.MutableEnumerable
       //
 
+      /**
+        Remove all occurances of an object in the array.
+
+        ```javascript
+        var cities = ["Chicago", "Berlin", "Lima", "Chicago"];
+        cities.removeObject("Chicago");  // ["Berlin", "Lima"]
+        cities.removeObject("Lima");     // ["Berlin"]
+        cities.removeObject("Tokyo")     // ["Berlin"]
+        ```
+
+        @method removeObject
+        @param {*} obj object to remove
+        @return {Ember.Array} receiver
+      */
       removeObject: function(obj) {
         var loc = get(this, 'length') || 0;
         while(--loc >= 0) {
-          var curObject = this.objectAt(loc) ;
-          if (curObject === obj) this.removeAt(loc) ;
+          var curObject = this.objectAt(loc);
+          if (curObject === obj) this.removeAt(loc);
         }
-        return this ;
+        return this;
       },
 
+      /**
+        Push the object onto the end of the array if it is not already
+        present in the array.
+
+        ```javascript
+        var cities = ["Chicago", "Berlin"];
+        cities.addObject("Lima");    // ["Chicago", "Berlin", "Lima"]
+        cities.addObject("Berlin");  // ["Chicago", "Berlin", "Lima"]
+        ```
+
+        @method addObject
+        @param {*} obj object to add, if not already present
+        @return {Ember.Array} receiver
+      */
       addObject: function(obj) {
         if (!this.contains(obj)) this.pushObject(obj);
-        return this ;
+        return this;
       }
 
     });
@@ -18865,7 +18883,7 @@ define("ember-runtime/system/array_proxy",
     var endPropertyChanges = __dependency7__.endPropertyChanges;
     var EmberError = __dependency8__["default"];
     var EmberObject = __dependency9__["default"];var MutableArray = __dependency10__["default"];var Enumerable = __dependency11__["default"];
-    var EmberStringUtils = __dependency12__["default"];
+    var fmt = __dependency12__.fmt;
 
     /**
     @module ember
@@ -19012,8 +19030,8 @@ define("ember-runtime/system/array_proxy",
         var content = get(this, 'content');
 
         if (content) {
-          Ember.assert(EmberStringUtils.fmt('ArrayProxy expects an Array or ' + 
-            'Ember.ArrayProxy, but you passed %@', [typeof content]), 
+          Ember.assert(fmt('ArrayProxy expects an Array or ' +
+            'Ember.ArrayProxy, but you passed %@', [typeof content]),
             isArray(content) || content.isDestroyed);
 
           content.addArrayObserver(this, {
@@ -19049,8 +19067,8 @@ define("ember-runtime/system/array_proxy",
         var arrangedContent = get(this, 'arrangedContent');
 
         if (arrangedContent) {
-          Ember.assert(EmberStringUtils.fmt('ArrayProxy expects an Array or ' + 
-            'Ember.ArrayProxy, but you passed %@', [typeof arrangedContent]), 
+          Ember.assert(fmt('ArrayProxy expects an Array or ' +
+            'Ember.ArrayProxy, but you passed %@', [typeof arrangedContent]),
             isArray(arrangedContent) || arrangedContent.isDestroyed);
 
           arrangedContent.addArrayObserver(this, {
@@ -20791,7 +20809,7 @@ define("ember-runtime/system/object_proxy",
     var computed = __dependency7__.computed;
     var defineProperty = __dependency8__.defineProperty;
     var observer = __dependency9__.observer;
-    var EmberStringUtils = __dependency10__["default"];
+    var fmt = __dependency10__.fmt;
     var EmberObject = __dependency11__["default"];
 
     function contentPropertyWillChange(content, contentKey) {
@@ -20919,7 +20937,7 @@ define("ember-runtime/system/object_proxy",
         }
 
         var content = get(this, 'content');
-        Ember.assert(EmberStringUtils.fmt("Cannot delegate set('%@', %@) to the 'content' property of object proxy %@: its 'content' is undefined.", [key, value, this]), content);
+        Ember.assert(fmt("Cannot delegate set('%@', %@) to the 'content' property of object proxy %@: its 'content' is undefined.", [key, value, this]), content);
         return set(content, key, value);
       }
 
@@ -20942,7 +20960,7 @@ define("ember-runtime/system/set",
     var set = __dependency3__.set;
     var guidFor = __dependency4__.guidFor;
     var isNone = __dependency5__.isNone;
-    var EmberStringUtils = __dependency6__["default"];
+    var fmt = __dependency6__.fmt;
     var CoreObject = __dependency7__["default"];
     var MutableEnumerable = __dependency8__["default"];
     var Enumerable = __dependency9__["default"];
@@ -21395,7 +21413,7 @@ define("ember-runtime/system/set",
         for(idx = 0; idx < len; idx++) {
           array[idx] = this[idx];
         }
-        return EmberStringUtils.fmt("Ember.Set<%@>", [array.join(',')]);
+        return fmt("Ember.Set<%@>", [array.join(',')]);
       }
 
     });
@@ -21422,6 +21440,73 @@ define("ember-runtime/system/string",
     var STRING_CAMELIZE_REGEXP = (/(\-|_|\.|\s)+(.)?/g);
     var STRING_UNDERSCORE_REGEXP_1 = (/([a-z\d])([A-Z]+)/g);
     var STRING_UNDERSCORE_REGEXP_2 = (/\-|\s+/g);
+
+    function fmt(str, formats) {
+      // first, replace any ORDERED replacements.
+      var idx  = 0; // the current index for non-numerical replacements
+      return str.replace(/%@([0-9]+)?/g, function(s, argIndex) {
+        argIndex = (argIndex) ? parseInt(argIndex, 10) - 1 : idx++;
+        s = formats[argIndex];
+        return (s === null) ? '(null)' : (s === undefined) ? '' : EmberInspect(s);
+      }) ;
+    }
+
+    function loc(str, formats) {
+      str = Ember.STRINGS[str] || str;
+      return fmt(str, formats);
+    }
+
+    function w(str) {
+      return str.split(/\s+/);
+    }
+
+    function decamelize(str) {
+      return str.replace(STRING_DECAMELIZE_REGEXP, '$1_$2').toLowerCase();
+    }
+
+    function dasherize(str) {
+      var cache = STRING_DASHERIZE_CACHE,
+          hit   = cache.hasOwnProperty(str),
+          ret;
+
+      if (hit) {
+        return cache[str];
+      } else {
+        ret = decamelize(str).replace(STRING_DASHERIZE_REGEXP,'-');
+        cache[str] = ret;
+      }
+
+      return ret;
+    }
+
+    function camelize(str) {
+      return str.replace(STRING_CAMELIZE_REGEXP, function(match, separator, chr) {
+        return chr ? chr.toUpperCase() : '';
+      }).replace(/^([A-Z])/, function(match, separator, chr) {
+        return match.toLowerCase();
+      });
+    }
+
+    function classify(str) {
+      var parts = str.split("."),
+          out = [];
+
+      for (var i=0, l=parts.length; i<l; i++) {
+        var camelized = camelize(parts[i]);
+        out.push(camelized.charAt(0).toUpperCase() + camelized.substr(1));
+      }
+
+      return out.join(".");
+    }
+
+    function underscore(str) {
+      return str.replace(STRING_UNDERSCORE_REGEXP_1, '$1_$2').
+        replace(STRING_UNDERSCORE_REGEXP_2, '_').toLowerCase();
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.substr(1);
+    }
 
     /**
       Defines the hash of localized strings for the current language. Used by
@@ -21465,15 +21550,7 @@ define("ember-runtime/system/string",
         @param {Array} formats An array of parameters to interpolate into string.
         @return {String} formatted string
       */
-      fmt: function(str, formats) {
-        // first, replace any ORDERED replacements.
-        var idx  = 0; // the current index for non-numerical replacements
-        return str.replace(/%@([0-9]+)?/g, function(s, argIndex) {
-          argIndex = (argIndex) ? parseInt(argIndex, 10) - 1 : idx++;
-          s = formats[argIndex];
-          return (s === null) ? '(null)' : (s === undefined) ? '' : EmberInspect(s);
-        }) ;
-      },
+      fmt: fmt,
 
       /**
         Formats the passed string, but first looks up the string in the localized
@@ -21499,10 +21576,7 @@ define("ember-runtime/system/string",
         @param {Array} formats Optional array of parameters to interpolate into string.
         @return {String} formatted string
       */
-      loc: function(str, formats) {
-        str = Ember.STRINGS[str] || str;
-        return EmberStringUtils.fmt(str, formats) ;
-      },
+      loc: loc,
 
       /**
         Splits a string into separate units separated by spaces, eliminating any
@@ -21521,9 +21595,9 @@ define("ember-runtime/system/string",
 
         @method w
         @param {String} str The string to split
-        @return {String} split string
+        @return {Array} array containing the split strings
       */
-      w: function(str) { return str.split(/\s+/); },
+      w: w,
 
       /**
         Converts a camelized string into all lower case separated by underscores.
@@ -21539,9 +21613,7 @@ define("ember-runtime/system/string",
         @param {String} str The string to decamelize.
         @return {String} the decamelized string.
       */
-      decamelize: function(str) {
-        return str.replace(STRING_DECAMELIZE_REGEXP, '$1_$2').toLowerCase();
-      },
+      decamelize: decamelize,
 
       /**
         Replaces underscores, spaces, or camelCase with dashes.
@@ -21557,20 +21629,7 @@ define("ember-runtime/system/string",
         @param {String} str The string to dasherize.
         @return {String} the dasherized string.
       */
-      dasherize: function(str) {
-        var cache = STRING_DASHERIZE_CACHE,
-            hit   = cache.hasOwnProperty(str),
-            ret;
-
-        if (hit) {
-          return cache[str];
-        } else {
-          ret = EmberStringUtils.decamelize(str).replace(STRING_DASHERIZE_REGEXP,'-');
-          cache[str] = ret;
-        }
-
-        return ret;
-      },
+      dasherize: dasherize,
 
       /**
         Returns the lowerCamelCase form of a string.
@@ -21587,13 +21646,7 @@ define("ember-runtime/system/string",
         @param {String} str The string to camelize.
         @return {String} the camelized string.
       */
-      camelize: function(str) {
-        return str.replace(STRING_CAMELIZE_REGEXP, function(match, separator, chr) {
-          return chr ? chr.toUpperCase() : '';
-        }).replace(/^([A-Z])/, function(match, separator, chr) {
-          return match.toLowerCase();
-        });
-      },
+      camelize: camelize,
 
       /**
         Returns the UpperCamelCase form of a string.
@@ -21609,17 +21662,7 @@ define("ember-runtime/system/string",
         @param {String} str the string to classify
         @return {String} the classified string
       */
-      classify: function(str) {
-        var parts = str.split("."),
-            out = [];
-
-        for (var i=0, l=parts.length; i<l; i++) {
-          var camelized = EmberStringUtils.camelize(parts[i]);
-          out.push(camelized.charAt(0).toUpperCase() + camelized.substr(1));
-        }
-
-        return out.join(".");
-      },
+      classify: classify,
 
       /**
         More general than decamelize. Returns the lower\_case\_and\_underscored
@@ -21636,10 +21679,7 @@ define("ember-runtime/system/string",
         @param {String} str The string to underscore.
         @return {String} the underscored string.
       */
-      underscore: function(str) {
-        return str.replace(STRING_UNDERSCORE_REGEXP_1, '$1_$2').
-          replace(STRING_UNDERSCORE_REGEXP_2, '_').toLowerCase();
-      },
+      underscore: underscore,
 
       /**
         Returns the Capitalized form of a string
@@ -21655,12 +21695,19 @@ define("ember-runtime/system/string",
         @param {String} str The string to capitalize.
         @return {String} The capitalized string.
       */
-      capitalize: function(str) {
-        return str.charAt(0).toUpperCase() + str.substr(1);
-      }
+      capitalize: capitalize
     };
 
     __exports__["default"] = EmberStringUtils;
+    __exports__.fmt = fmt;
+    __exports__.loc = loc;
+    __exports__.w = w;
+    __exports__.decamelize = decamelize;
+    __exports__.dasherize = dasherize;
+    __exports__.camelize = camelize;
+    __exports__.classify = classify;
+    __exports__.underscore = underscore;
+    __exports__.capitalize = capitalize;
   });
 define("ember-runtime/system/subarray", 
   ["ember-metal/property_get","ember-metal/error","ember-metal/enumerable_utils","exports"],
@@ -22378,11 +22425,7 @@ define("ember-views/system/event_dispatcher",
     var isNone = __dependency4__.isNone;
     var run = __dependency5__["default"];
     var typeOf = __dependency6__.typeOf;
-
-    // ES6TODO functions on EmberStringUtils should have their own export
-    var EmberStringUtils = __dependency7__["default"];
-    var fmt = EmberStringUtils.fmt;
-
+    var fmt = __dependency7__.fmt;
     var EmberObject = __dependency8__["default"];
     var jQuery = __dependency9__["default"];
     var View = __dependency10__.View;
@@ -22624,10 +22667,7 @@ define("ember-views/system/jquery",
     "use strict";
     var Ember = __dependency1__["default"];
     // Ember.assert
-
-    // ES6TODO: the functions on EmberStringUtils need their own exports
-    var EmberStringUtils = __dependency2__["default"];
-    var w = EmberStringUtils.w;
+    var w = __dependency2__.w;
 
     // ES6TODO: the functions on EnumerableUtils need their own exports
     var EnumerableUtils = __dependency3__["default"];
@@ -23377,10 +23417,7 @@ define("ember-views/views/collection_view",
     var merge = __dependency3__["default"];
     var get = __dependency4__.get;
     var set = __dependency5__.set;
-
-    var EmberStringUtils = __dependency6__["default"];
-    var fmt = EmberStringUtils.fmt;
-
+    var fmt = __dependency6__.fmt;
     var ContainerView = __dependency7__["default"];
     var CoreView = __dependency8__.CoreView;
     var View = __dependency8__.View;
@@ -24639,9 +24676,7 @@ define("ember-views/views/states/destroying",
     "use strict";
     var merge = __dependency1__["default"];
     var create = __dependency2__.create;
-    var EmberStringUtils = __dependency3__["default"];
-    var fmt = EmberStringUtils.fmt;
-
+    var fmt = __dependency3__.fmt;
     var _default = __dependency4__["default"];
     /**
     @module ember
@@ -25012,9 +25047,7 @@ define("ember-views/views/view",
 
     var instrument = __dependency19__.instrument;
 
-    // ES6TODO: functions on EmberStringUtils should get their own export
-    var EmberStringUtils = __dependency20__["default"];
-    var dasherize = EmberStringUtils.dasherize;
+    var dasherize = __dependency20__.dasherize;
 
     // ES6TODO: functions on EnumerableUtils should get their own export
     var EnumerableUtils = __dependency21__["default"];
@@ -25879,8 +25912,9 @@ define("ember-views/views/view",
       * `drag`
       * `dragEnter`
       * `dragLeave`
-      * `drop`
+      * `dragOver`
       * `dragEnd`
+      * `drop`
 
       ## Handlebars `{{view}}` Helper
 
@@ -28826,7 +28860,7 @@ define("ember-handlebars/controls/checkbox",
       tagName: 'input',
 
       attributeBindings: ['type', 'checked', 'indeterminate', 'disabled', 'tabindex', 'name',
-                          'autofocus', 'form'],
+                          'autofocus', 'required', 'form'],
 
       type: "checkbox",
       checked: false,
@@ -29889,8 +29923,7 @@ define("ember-handlebars/ext",
     // Ember.FEATURES, Ember.assert, Ember.Handlebars, Ember.lookup
     // var emberAssert = Ember.assert;
 
-    var EmberStringUtils = __dependency2__["default"];
-    var fmt = EmberStringUtils.fmt;
+    var fmt = __dependency2__.fmt;
 
     var EmberHandlebars = __dependency3__["default"];
     var helpers = EmberHandlebars.helpers;
@@ -30472,8 +30505,8 @@ define("ember-handlebars/helpers/binding",
 
     var get = __dependency3__.get;
     var set = __dependency4__.set;
-    var EmberStringUtils = __dependency5__["default"];
-    var create = __dependency6__.create;
+    var fmt = __dependency5__.fmt;
+    var o_create = __dependency6__.create;
     var isNone = __dependency7__["default"];
     var EnumerableUtils = __dependency8__["default"];
     var forEach = __dependency9__.forEach;
@@ -30492,11 +30525,7 @@ define("ember-handlebars/helpers/binding",
     var handlebarsGet = __dependency17__.handlebarsGet;
     var getEscaped = __dependency17__.getEscaped;
     var handlebarsGetEscaped = __dependency17__.getEscaped;
-
     var keys = __dependency18__["default"];
-
-    var fmt = EmberStringUtils.fmt;
-    var o_create = create;
 
     function exists(value) {
       return !isNone(value);
@@ -31326,9 +31355,7 @@ define("ember-handlebars/helpers/collection",
     var EmberHandlebars = __dependency3__["default"];
     var helpers = EmberHandlebars.helpers;
 
-    var EmberStringUtils = __dependency4__["default"];
-    var fmt = EmberStringUtils.fmt;
-
+    var fmt = __dependency4__.fmt;
     var get = __dependency5__.get;
     var handlebarsGet = __dependency6__.handlebarsGet;
     var ViewHelper = __dependency7__.ViewHelper;
@@ -31602,11 +31629,7 @@ define("ember-handlebars/helpers/debug",
           options = arguments[arguments.length - 1],
           logger = Logger.log,
           values = [],
-          allowPrimitives = false;
-
-      
-        allowPrimitives = true;
-      
+          allowPrimitives = true;
 
       for (var i = 0; i < params.length; i++) {
         var type = options.types[i];
@@ -31691,9 +31714,7 @@ define("ember-handlebars/helpers/each",
     var EmberHandlebars = __dependency2__["default"];
     var helpers = EmberHandlebars.helpers;
 
-    var EmberStringUtils = __dependency3__["default"];
-    var fmt = EmberStringUtils.fmt;
-
+    var fmt = __dependency3__.fmt;
     var get = __dependency4__.get;
     var set = __dependency5__.set;
     var _Metamorph = __dependency6__._Metamorph;
@@ -32147,8 +32168,7 @@ define("ember-handlebars/helpers/loc",
   ["ember-runtime/system/string","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
-    var EmberStringUtils = __dependency1__["default"];
-    var loc = EmberStringUtils.loc;
+    var loc = __dependency1__.loc;
 
     /**
     @module ember
@@ -32914,7 +32934,7 @@ define("ember-handlebars/helpers/yield",
       ```html
       <label>
         First name: <input type="text" />
-      <label>
+      </label>
       ```
 
       @method yield
@@ -33062,7 +33082,7 @@ define("ember-handlebars",
     var blockHelperMissingHelper = __dependency5__.blockHelperMissingHelper;
 
 
-    // side effect of extending StringUtils
+    // side effect of extending StringUtils of htmlSafe
 
     var resolvePaths = __dependency7__["default"];
     var bind = __dependency8__.bind;
@@ -33186,9 +33206,10 @@ define("ember-handlebars",
     __exports__["default"] = EmberHandlebars;
   });
 define("ember-handlebars/string", 
-  ["ember-runtime/system/string"],
-  function(__dependency1__) {
+  ["ember-runtime/system/string","exports"],
+  function(__dependency1__, __exports__) {
     "use strict";
+    // required so we can extend this object.
     var EmberStringUtils = __dependency1__["default"];
 
     /**
@@ -33229,6 +33250,8 @@ define("ember-handlebars/string",
         return htmlSafe(this);
       };
     }
+
+    __exports__["default"] = htmlSafe;
   });
 define("ember-handlebars/views/handlebars_bound_view", 
   ["ember-handlebars-compiler","ember-metal/core","ember-metal/error","ember-metal/property_get","ember-metal/property_set","ember-metal/merge","ember-metal/run_loop","ember-views/views/view","ember-views/views/states","ember-handlebars/views/metamorph_view","ember-handlebars/ext","exports"],
@@ -34191,16 +34214,15 @@ define("ember-routing/helpers/action",
             target = target.root;
           }
 
-          
-            if (options.boundProperty) {
-              actionName = handlebarsGet(target, actionNameOrPath, options.options);
+          if (options.boundProperty) {
+            actionName = handlebarsGet(target, actionNameOrPath, options.options);
 
-              if(typeof actionName === 'undefined' || typeof actionName === 'function') {
-                Ember.assert("You specified a quoteless path to the {{action}} helper '" + actionNameOrPath + "' which did not resolve to an actionName. Perhaps you meant to use a quoted actionName? (e.g. {{action '" + actionNameOrPath + "'}}).", true);
-                actionName = actionNameOrPath;
-              }
+            if(typeof actionName === 'undefined' || typeof actionName === 'function') {
+              Ember.assert("You specified a quoteless path to the {{action}} helper '" + actionNameOrPath + "' which did not resolve to an actionName. Perhaps you meant to use a quoted actionName? (e.g. {{action '" + actionNameOrPath + "'}}).", true);
+              actionName = actionNameOrPath;
             }
-          
+          }
+
           if (!actionName) {
             actionName = actionNameOrPath;
           }
@@ -34441,7 +34463,7 @@ define("ember-routing/helpers/link_to",
     var computed = __dependency6__.computed;
 
     var onLoad = __dependency7__.onLoad;
-    var EmberStringUtils = __dependency8__["default"];
+    var fmt = __dependency8__.fmt;
     var EmberObject = __dependency9__["default"];
     var keys = __dependency10__["default"];
     var isSimpleClick = __dependency11__.isSimpleClick;
@@ -34459,11 +34481,8 @@ define("ember-routing/helpers/link_to",
     @submodule ember-routing
     */
 
-    var fmt = EmberStringUtils.fmt;
+    var slice = [].slice;
 
-    var slice = Array.prototype.slice;
-
-    // require('ember-handlebars/helpers/view');
     requireModule('ember-handlebars');
 
     var numberOfContextsAcceptedByHandler = function(handler, handlerInfos) {
@@ -34823,7 +34842,7 @@ define("ember-routing/helpers/link_to",
         // this is because the leaf route will use one of the contexts
         if (contexts.length > maximumContexts)
           currentWhen = routeArgs[0];
-        
+
         var isActive = router.isActive.apply(router, [currentWhen].concat(contexts));
 
         if (isActive) { return get(this, 'activeClass'); }
@@ -34886,14 +34905,12 @@ define("ember-routing/helpers/link_to",
 
         // Schedule eager URL update, but after we've given the transition
         // a chance to synchronously redirect.
-        
-          // We need to always generate the URL instead of using the href because
-          // the href will include any rootURL set, but the router expects a URL
-          // without it! Note that we don't use the first level router because it
-          // calls location.formatURL(), which also would add the rootURL!
-          var url = router.router.generate.apply(router.router, routeArgsWithoutDefaultQueryParams(this));
-          run.scheduleOnce('routerTransitions', this, this._eagerUpdateUrl, transition, url);
-        
+        // We need to always generate the URL instead of using the href because
+        // the href will include any rootURL set, but the router expects a URL
+        // without it! Note that we don't use the first level router because it
+        // calls location.formatURL(), which also would add the rootURL!
+        var url = router.router.generate.apply(router.router, routeArgsWithoutDefaultQueryParams(this));
+        run.scheduleOnce('routerTransitions', this, this._eagerUpdateUrl, transition, url);
       },
 
       /**
@@ -35511,7 +35528,7 @@ define("ember-routing/helpers/render",
     var EmberError = __dependency2__["default"];
     var get = __dependency3__.get;
     var set = __dependency4__.set;
-    var EmberStringUtils = __dependency5__["default"];
+    var camelize = __dependency5__.camelize;
     var generateControllerFactory = __dependency6__.generateControllerFactory;
     var generateController = __dependency6__.generateController;
     var handlebarsGet = __dependency7__.handlebarsGet;
@@ -35664,7 +35681,7 @@ define("ember-routing/helpers/render",
         });
       }
 
-      options.hash.viewName = EmberStringUtils.camelize(name);
+      options.hash.viewName = camelize(name);
 
       var templateName = 'template:' + name;
       Ember.assert("You used `{{render '" + name + "'}}`, but '" + name + "' can not be found as either a template or a view.", container.has("view:" + name) || container.has(templateName) || options.fn);
@@ -35957,359 +35974,357 @@ define("ember-routing/location/auto_location",
     var HashLocation = __dependency6__["default"];
     var NoneLocation = __dependency7__["default"];
 
-    
-      /**
-      @module ember
-      @submodule ember-routing
-      */
+    /**
+    @module ember
+    @submodule ember-routing
+    */
+
+    /**
+      Ember.AutoLocation will select the best location option based off browser
+      support with the priority order: history, hash, none.
+
+      Clean pushState paths accessed by hashchange-only browsers will be redirected
+      to the hash-equivalent and vice versa so future transitions are consistent.
+
+      Keep in mind that since some of your users will use `HistoryLocation`, your
+      server must serve the Ember app at all the routes you define.
+
+      @class AutoLocation
+      @namespace Ember
+      @static
+    */
+    var AutoLocation = {
 
       /**
-        Ember.AutoLocation will select the best location option based off browser
-        support with the priority order: history, hash, none.
+        @private
 
-        Clean pushState paths accessed by hashchange-only browsers will be redirected
-        to the hash-equivalent and vice versa so future transitions are consistent.
+        Will be pre-pended to path upon state change.
 
-        Keep in mind that since some of your users will use `HistoryLocation`, your
-        server must serve the Ember app at all the routes you define.
-
-        @class AutoLocation
-        @namespace Ember
-        @static
+        @property rootURL
+        @default '/'
       */
-      var AutoLocation = {
+      _rootURL: '/',
 
-        /**
-          @private
+      /**
+        @private
 
-          Will be pre-pended to path upon state change.
+        Attached for mocking in tests
 
-          @property rootURL
-          @default '/'
-        */
-        _rootURL: '/',
+        @property _window
+        @default window
+      */
+      _window: window,
 
-        /**
-          @private
+      /**
+        @private
 
-          Attached for mocking in tests
+        Attached for mocking in tests
 
-          @property _window
-          @default window
-        */
-        _window: window,
+        @property location
+        @default window.location
+      */
+      _location: window.location,
 
-        /**
-          @private
+      /**
+        @private
 
-          Attached for mocking in tests
+        Attached for mocking in tests
 
-          @property location
-          @default window.location
-        */
-        _location: window.location,
+        @property _history
+        @default window.history
+      */
+      _history: window.history,
 
-        /**
-          @private
+      /**
+        @private
 
-          Attached for mocking in tests
+        Attached for mocking in tests
 
-          @property _history
-          @default window.history
-        */
-        _history: window.history,
+        @property _HistoryLocation
+        @default Ember.HistoryLocation
+      */
+      _HistoryLocation: HistoryLocation,
 
-        /**
-          @private
+      /**
+        @private
 
-          Attached for mocking in tests
+        Attached for mocking in tests
 
-          @property _HistoryLocation
-          @default Ember.HistoryLocation
-        */
-        _HistoryLocation: HistoryLocation,
+        @property _HashLocation
+        @default Ember.HashLocation
+      */
+      _HashLocation: HashLocation,
 
-        /**
-          @private
+      /**
+        @private
 
-          Attached for mocking in tests
+        Attached for mocking in tests
 
-          @property _HashLocation
-          @default Ember.HashLocation
-        */
-        _HashLocation: HashLocation,
+        @property _NoneLocation
+        @default Ember.NoneLocation
+      */
+      _NoneLocation: NoneLocation,
 
-        /**
-          @private
+      /**
+        @private
 
-          Attached for mocking in tests
+        Returns location.origin or builds it if device doesn't support it.
 
-          @property _NoneLocation
-          @default Ember.NoneLocation
-        */
-        _NoneLocation: NoneLocation,
+        @method _getOrigin
+      */
+      _getOrigin: function () {
+        var location = this._location,
+            origin = location.origin;
 
-        /**
-          @private
-
-          Returns location.origin or builds it if device doesn't support it.
-
-          @method _getOrigin
-        */
-        _getOrigin: function () {
-          var location = this._location,
-              origin = location.origin;
-
-          // Older browsers, especially IE, don't have origin
-          if (!origin) {
-            origin = location.protocol + '//' + location.hostname;
-            
-            if (location.port) {
-              origin += ':' + location.port;
-            }
+        // Older browsers, especially IE, don't have origin
+        if (!origin) {
+          origin = location.protocol + '//' + location.hostname;
+          
+          if (location.port) {
+            origin += ':' + location.port;
           }
-
-          return origin;
-        },
-
-        /**
-          @private
-
-          We assume that if the history object has a pushState method, the host should
-          support HistoryLocation.
-
-          @method _getSupportsHistory
-        */
-        _getSupportsHistory: function () {
-          // Boosted from Modernizr: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
-          // The stock browser on Android 2.2 & 2.3 returns positive on history support
-          // Unfortunately support is really buggy and there is no clean way to detect
-          // these bugs, so we fall back to a user agent sniff :(
-          var userAgent = this._window.navigator.userAgent;
-
-          // We only want Android 2, stock browser, and not Chrome which identifies
-          // itself as 'Mobile Safari' as well
-          if (userAgent.indexOf('Android 2') !== -1 &&
-              userAgent.indexOf('Mobile Safari') !== -1 &&
-              userAgent.indexOf('Chrome') === -1) {
-            return false;
-          }
-
-          return !!(this._history && 'pushState' in this._history);
-        },
-
-        /**
-          @private
-
-          IE8 running in IE7 compatibility mode gives false positive, so we must also
-          check documentMode.
-
-          @method _getSupportsHashChange
-        */
-        _getSupportsHashChange: function () {
-          var window = this._window,
-              documentMode = window.document.documentMode;
-
-          return ('onhashchange' in window && (documentMode === undefined || documentMode > 7 ));
-        },
-
-        /**
-          @private
-
-          Redirects the browser using location.replace, prepending the locatin.origin
-          to prevent phishing attempts
-
-          @method _replacePath
-        */
-        _replacePath: function (path) {
-          this._location.replace(this._getOrigin() + path);
-        },
-
-        /**
-          @private
-          @method _getRootURL
-        */
-        _getRootURL: function () {
-          return this._rootURL;
-        },
-
-        /**
-          @private
-
-          Returns the current `location.pathname`, normalized for IE inconsistencies.
-
-          @method _getPath
-        */
-        _getPath: function () {
-          var pathname = this._location.pathname;
-          // Various versions of IE/Opera don't always return a leading slash
-          if (pathname.charAt(0) !== '/') {
-            pathname = '/' + pathname;
-          }
-
-          return pathname;
-        },
-
-        /**
-          @private
-
-          Returns normalized location.hash as an alias to Ember.Location._getHash
-
-          @method _getHash
-        */
-        _getHash: EmberLocation._getHash,
-
-        /**
-          @private
-
-          Returns location.search
-
-          @method _getQuery
-        */
-        _getQuery: function () {
-          return this._location.search;
-        },
-
-        /**
-          @private
-
-          Returns the full pathname including query and hash
-
-          @method _getFullPath
-        */
-        _getFullPath: function () {
-          return this._getPath() + this._getQuery() + this._getHash();
-        },
-
-        /**
-          @private
-
-          Returns the current path as it should appear for HistoryLocation supported
-          browsers. This may very well differ from the real current path (e.g. if it 
-          starts off as a hashed URL)
-
-          @method _getHistoryPath
-        */
-        _getHistoryPath: function () {
-          var rootURL = this._getRootURL(),
-              path = this._getPath(),
-              hash = this._getHash(),
-              query = this._getQuery(),
-              rootURLIndex = path.indexOf(rootURL),
-              routeHash, hashParts;
-
-          Ember.assert('Path ' + path + ' does not start with the provided rootURL ' + rootURL, rootURLIndex === 0);
-
-          // By convention, Ember.js routes using HashLocation are required to start
-          // with `#/`. Anything else should NOT be considered a route and should
-          // be passed straight through, without transformation.
-          if (hash.substr(0, 2) === '#/') {
-            // There could be extra hash segments after the route
-            hashParts = hash.substr(1).split('#');
-            // The first one is always the route url
-            routeHash = hashParts.shift();
-
-            // If the path already has a trailing slash, remove the one
-            // from the hashed route so we don't double up.
-            if (path.slice(-1) === '/') {
-                routeHash = routeHash.substr(1);
-            }
-
-            // This is the "expected" final order
-            path += routeHash;
-            path += query;
-
-            if (hashParts.length) {
-              path += '#' + hashParts.join('#');
-            }
-          } else {
-            path += query;
-            path += hash;
-          }
-
-          return path;
-        },
-
-        /**
-          @private
-
-          Returns the current path as it should appear for HashLocation supported
-          browsers. This may very well differ from the real current path.
-
-          @method _getHashPath
-        */
-        _getHashPath: function () {
-          var rootURL = this._getRootURL(),
-              path = rootURL,
-              historyPath = this._getHistoryPath(),
-              routePath = historyPath.substr(rootURL.length);
-
-          if (routePath !== '') {
-            if (routePath.charAt(0) !== '/') {
-              routePath = '/' + routePath;
-            }
-
-            path += '#' + routePath;
-          }
-
-          return path;
-        },
-
-        /**
-          Selects the best location option based off browser support and returns an
-          instance of that Location class.
-        
-          @see Ember.AutoLocation
-          @method create
-        */
-        create: function (options) {
-          if (options && options.rootURL) {
-            this._rootURL = options.rootURL;
-          }
-
-          var historyPath, hashPath,
-              cancelRouterSetup = false,
-              implementationClass = this._NoneLocation,
-              currentPath = this._getFullPath();
-
-          if (this._getSupportsHistory()) {
-            historyPath = this._getHistoryPath();
-
-            // Since we support history paths, let's be sure we're using them else 
-            // switch the location over to it.
-            if (currentPath === historyPath) {
-              implementationClass = this._HistoryLocation;
-            } else {
-              cancelRouterSetup = true;
-              this._replacePath(historyPath);
-            }
-
-          } else if (this._getSupportsHashChange()) {
-            hashPath = this._getHashPath();
-
-            // Be sure we're using a hashed path, otherwise let's switch over it to so
-            // we start off clean and consistent. We'll count an index path with no
-            // hash as "good enough" as well.
-            if (currentPath === hashPath || (currentPath === '/' && hashPath === '/#/')) {
-              implementationClass = this._HashLocation;
-            } else {
-              // Our URL isn't in the expected hash-supported format, so we want to
-              // cancel the router setup and replace the URL to start off clean
-              cancelRouterSetup = true;
-              this._replacePath(hashPath);
-            }
-          }
-
-          var implementation = implementationClass.create.apply(implementationClass, arguments);
-
-          if (cancelRouterSetup) {
-            set(implementation, 'cancelRouterSetup', true);
-          }
-
-          return implementation;
         }
-      };
-    
+
+        return origin;
+      },
+
+      /**
+        @private
+
+        We assume that if the history object has a pushState method, the host should
+        support HistoryLocation.
+
+        @method _getSupportsHistory
+      */
+      _getSupportsHistory: function () {
+        // Boosted from Modernizr: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
+        // The stock browser on Android 2.2 & 2.3 returns positive on history support
+        // Unfortunately support is really buggy and there is no clean way to detect
+        // these bugs, so we fall back to a user agent sniff :(
+        var userAgent = this._window.navigator.userAgent;
+
+        // We only want Android 2, stock browser, and not Chrome which identifies
+        // itself as 'Mobile Safari' as well
+        if (userAgent.indexOf('Android 2') !== -1 &&
+            userAgent.indexOf('Mobile Safari') !== -1 &&
+            userAgent.indexOf('Chrome') === -1) {
+          return false;
+        }
+
+        return !!(this._history && 'pushState' in this._history);
+      },
+
+      /**
+        @private
+
+        IE8 running in IE7 compatibility mode gives false positive, so we must also
+        check documentMode.
+
+        @method _getSupportsHashChange
+      */
+      _getSupportsHashChange: function () {
+        var window = this._window,
+            documentMode = window.document.documentMode;
+
+        return ('onhashchange' in window && (documentMode === undefined || documentMode > 7 ));
+      },
+
+      /**
+        @private
+
+        Redirects the browser using location.replace, prepending the locatin.origin
+        to prevent phishing attempts
+
+        @method _replacePath
+      */
+      _replacePath: function (path) {
+        this._location.replace(this._getOrigin() + path);
+      },
+
+      /**
+        @private
+        @method _getRootURL
+      */
+      _getRootURL: function () {
+        return this._rootURL;
+      },
+
+      /**
+        @private
+
+        Returns the current `location.pathname`, normalized for IE inconsistencies.
+
+        @method _getPath
+      */
+      _getPath: function () {
+        var pathname = this._location.pathname;
+        // Various versions of IE/Opera don't always return a leading slash
+        if (pathname.charAt(0) !== '/') {
+          pathname = '/' + pathname;
+        }
+
+        return pathname;
+      },
+
+      /**
+        @private
+
+        Returns normalized location.hash as an alias to Ember.Location._getHash
+
+        @method _getHash
+      */
+      _getHash: EmberLocation._getHash,
+
+      /**
+        @private
+
+        Returns location.search
+
+        @method _getQuery
+      */
+      _getQuery: function () {
+        return this._location.search;
+      },
+
+      /**
+        @private
+
+        Returns the full pathname including query and hash
+
+        @method _getFullPath
+      */
+      _getFullPath: function () {
+        return this._getPath() + this._getQuery() + this._getHash();
+      },
+
+      /**
+        @private
+
+        Returns the current path as it should appear for HistoryLocation supported
+        browsers. This may very well differ from the real current path (e.g. if it 
+        starts off as a hashed URL)
+
+        @method _getHistoryPath
+      */
+      _getHistoryPath: function () {
+        var rootURL = this._getRootURL(),
+            path = this._getPath(),
+            hash = this._getHash(),
+            query = this._getQuery(),
+            rootURLIndex = path.indexOf(rootURL),
+            routeHash, hashParts;
+
+        Ember.assert('Path ' + path + ' does not start with the provided rootURL ' + rootURL, rootURLIndex === 0);
+
+        // By convention, Ember.js routes using HashLocation are required to start
+        // with `#/`. Anything else should NOT be considered a route and should
+        // be passed straight through, without transformation.
+        if (hash.substr(0, 2) === '#/') {
+          // There could be extra hash segments after the route
+          hashParts = hash.substr(1).split('#');
+          // The first one is always the route url
+          routeHash = hashParts.shift();
+
+          // If the path already has a trailing slash, remove the one
+          // from the hashed route so we don't double up.
+          if (path.slice(-1) === '/') {
+              routeHash = routeHash.substr(1);
+          }
+
+          // This is the "expected" final order
+          path += routeHash;
+          path += query;
+
+          if (hashParts.length) {
+            path += '#' + hashParts.join('#');
+          }
+        } else {
+          path += query;
+          path += hash;
+        }
+
+        return path;
+      },
+
+      /**
+        @private
+
+        Returns the current path as it should appear for HashLocation supported
+        browsers. This may very well differ from the real current path.
+
+        @method _getHashPath
+      */
+      _getHashPath: function () {
+        var rootURL = this._getRootURL(),
+            path = rootURL,
+            historyPath = this._getHistoryPath(),
+            routePath = historyPath.substr(rootURL.length);
+
+        if (routePath !== '') {
+          if (routePath.charAt(0) !== '/') {
+            routePath = '/' + routePath;
+          }
+
+          path += '#' + routePath;
+        }
+
+        return path;
+      },
+
+      /**
+        Selects the best location option based off browser support and returns an
+        instance of that Location class.
+      
+        @see Ember.AutoLocation
+        @method create
+      */
+      create: function (options) {
+        if (options && options.rootURL) {
+          this._rootURL = options.rootURL;
+        }
+
+        var historyPath, hashPath,
+            cancelRouterSetup = false,
+            implementationClass = this._NoneLocation,
+            currentPath = this._getFullPath();
+
+        if (this._getSupportsHistory()) {
+          historyPath = this._getHistoryPath();
+
+          // Since we support history paths, let's be sure we're using them else 
+          // switch the location over to it.
+          if (currentPath === historyPath) {
+            implementationClass = this._HistoryLocation;
+          } else {
+            cancelRouterSetup = true;
+            this._replacePath(historyPath);
+          }
+
+        } else if (this._getSupportsHashChange()) {
+          hashPath = this._getHashPath();
+
+          // Be sure we're using a hashed path, otherwise let's switch over it to so
+          // we start off clean and consistent. We'll count an index path with no
+          // hash as "good enough" as well.
+          if (currentPath === hashPath || (currentPath === '/' && hashPath === '/#/')) {
+            implementationClass = this._HashLocation;
+          } else {
+            // Our URL isn't in the expected hash-supported format, so we want to
+            // cancel the router setup and replace the URL to start off clean
+            cancelRouterSetup = true;
+            this._replacePath(hashPath);
+          }
+        }
+
+        var implementation = implementationClass.create.apply(implementationClass, arguments);
+
+        if (cancelRouterSetup) {
+          set(implementation, 'cancelRouterSetup', true);
+        }
+
+        return implementation;
+      }
+    };
 
     __exports__["default"] = AutoLocation;
   });
@@ -37076,7 +37091,8 @@ define("ember-routing/system/route",
 
     var keys = __dependency11__["default"];
     var copy = __dependency12__["default"];
-    var EmberStringUtils = __dependency13__["default"];
+    var classify = __dependency13__.classify;
+    var fmt = __dependency13__.fmt;
     var EmberObject = __dependency14__["default"];
     var ActionHandler = __dependency15__["default"];
     var generateController = __dependency16__.generateController;
@@ -37086,9 +37102,7 @@ define("ember-routing/system/route",
     @submodule ember-routing
     */
 
-    var classify = EmberStringUtils.classify,
-        fmt = EmberStringUtils.fmt,
-        a_forEach = EnumerableUtils.forEach,
+    var a_forEach = EnumerableUtils.forEach,
         a_replace = EnumerableUtils.replace;
 
     /**
@@ -37406,8 +37420,8 @@ define("ember-routing/system/route",
             var totalChanged = keys(changed).concat(keys(removed));
             for (var i = 0, len = totalChanged.length; i < len; ++i) {
               var urlKey = totalChanged[i],
-                  options = this.queryParams[urlKey] || {};
-              if (options.refreshModel) {
+                  options = get(this.queryParams, urlKey) || {};
+              if (get(options, 'refreshModel')) {
                 this.refresh();
               }
             }
@@ -37463,8 +37477,8 @@ define("ember-routing/system/route",
 
                 // Now check if this value actually changed.
                 if (svalue !== qp.svalue) {
-                  var options = this.queryParams[qp.urlKey] || {};
-                  if (options.replace) {
+                  var options = get(this.queryParams, qp.urlKey) || {};
+                  if (get(options, 'replace')) {
                     transition.method('replace');
                   }
 
@@ -38017,13 +38031,12 @@ define("ember-routing/system/route",
 
         if (!name && sawParams) { return copy(params); }
         else if (!name) {
-          
-            if (transition.resolveIndex !== transition.state.handlerInfos.length-1) { return; }
+          if (transition.resolveIndex !== transition.state.handlerInfos.length-1) { return; }
 
-            var parentModel = transition.state.handlerInfos[transition.resolveIndex-1].context;
+          var parentModel = transition.state.handlerInfos[transition.resolveIndex-1].context;
 
-            return parentModel;
-                  }
+          return parentModel;
+        }
 
         return this.findModel(name, value);
       },
@@ -38899,7 +38912,7 @@ define("ember-routing/system/router",
     var run = __dependency9__["default"];
     var EnumerableUtils = __dependency10__["default"];
 
-    var EmberStringUtils = __dependency11__["default"];
+    var fmt = __dependency11__.fmt;
     var EmberObject = __dependency12__["default"];
     var Evented = __dependency13__["default"];
     var EmberRouterDSL = __dependency14__["default"];
@@ -38924,8 +38937,7 @@ define("ember-routing/system/router",
     var Router = requireModule("router")['default'];
     var Transition = requireModule("router/transition").Transition;
 
-    var fmt = EmberStringUtils.fmt;
-    var slice = Array.prototype.slice;
+    var slice = [].slice;
     var forEach = EnumerableUtils.forEach;
 
     var DefaultView = _MetamorphView;
@@ -38996,13 +39008,11 @@ define("ember-routing/system/router",
             self = this,
             initialURL = get(this, 'initialURL');
 
-        
-          // Allow the Location class to cancel the router setup while it refreshes
-          // the page
-          if (get(location, 'cancelRouterSetup')) {
-            return;
-          }
-        
+        // Allow the Location class to cancel the router setup while it refreshes
+        // the page
+        if (get(location, 'cancelRouterSetup')) {
+          return;
+        }
 
         this._setupRouter(router, location);
 
@@ -43137,10 +43147,7 @@ define("ember-application/system/application",
         container.register('router:main',  Router);
         container.injection('router:main', 'namespace', 'application:main');
 
-        
-          container.register('location:auto', AutoLocation);
-        
-
+        container.register('location:auto', AutoLocation);
         container.register('location:hash', HashLocation);
         container.register('location:history', HistoryLocation);
         container.register('location:none', NoneLocation);
@@ -43338,14 +43345,12 @@ define("ember-application/system/resolver",
     var Ember = __dependency1__["default"];
     // Ember.TEMPLATES, Ember.assert
     var get = __dependency2__.get;
-    var EmberStringUtils = __dependency3__["default"];
+    var classify = __dependency3__.classify;
+    var capitalize = __dependency3__.capitalize;
+    var decamelize = __dependency3__.decamelize;
     var EmberObject = __dependency4__["default"];
     var Namespace = __dependency5__["default"];
     var EmberHandlebars = __dependency6__["default"];
-
-    var classify = EmberStringUtils.classify,
-        capitalize = EmberStringUtils.capitalize,
-        decamelize = EmberStringUtils.decamelize;
 
     var Resolver = EmberObject.extend({
       /**
@@ -43691,7 +43696,8 @@ define("ember-extension-support/container_debug_adapter",
     "use strict";
     var Ember = __dependency1__["default"];
     var typeOf = __dependency2__.typeOf;
-    var EmberStringUtils = __dependency3__["default"];
+    var dasherize = __dependency3__.dasherize;
+    var classify = __dependency3__.classify;
     var Namespace = __dependency4__["default"];
     var EmberObject = __dependency5__["default"];
 
@@ -43776,7 +43782,7 @@ define("ember-extension-support/container_debug_adapter",
       */
       catalogEntriesByType: function(type) {
         var namespaces = Ember.A(Namespace.NAMESPACES), types = Ember.A(), self = this;
-        var typeSuffixRegex = new RegExp(EmberStringUtils.classify(type) + "$");
+        var typeSuffixRegex = new RegExp(classify(type) + "$");
 
         namespaces.forEach(function(namespace) {
           if (namespace !== Ember) {
@@ -43785,7 +43791,7 @@ define("ember-extension-support/container_debug_adapter",
               if (typeSuffixRegex.test(key)) {
                 var klass = namespace[key];
                 if (typeOf(klass) === 'class') {
-                  types.push(EmberStringUtils.dasherize(key.replace(typeSuffixRegex, '')));
+                  types.push(dasherize(key.replace(typeSuffixRegex, '')));
                 }
               }
             }
@@ -43804,7 +43810,7 @@ define("ember-extension-support/data_adapter",
     var Ember = __dependency1__["default"];
     var get = __dependency2__.get;
     var run = __dependency3__["default"];
-    var EmberStringUtils = __dependency4__["default"];
+    var dasherize = __dependency4__.dasherize;
     var Namespace = __dependency5__["default"];
     var EmberObject = __dependency6__["default"];
     var A = __dependency7__.A;
@@ -44168,7 +44174,7 @@ define("ember-extension-support/data_adapter",
         namespaces.forEach(function(namespace) {
           for (var key in namespace) {
             if (!namespace.hasOwnProperty(key)) { continue; }
-            var name = EmberStringUtils.dasherize(key);
+            var name = dasherize(key);
             if (!(namespace instanceof Application) && namespace.toString()) {
               name = namespace + '/' + name;
             }
@@ -44714,86 +44720,82 @@ define("ember-testing/helpers",
     asyncHelper('andThen', andThen);
 
 
-    
-      /**
-        Returns the currently active route name.
+    /**
+      Returns the currently active route name.
 
-        Example:
+    Example:
 
-        ```javascript
-        function validateRouteName(){
-          equal(currentRouteName(), 'some.path', "correct route was transitioned into.");
-        }
+    ```javascript
+    function validateRouteName(){
+    equal(currentRouteName(), 'some.path', "correct route was transitioned into.");
+    }
 
-        visit('/some/path').then(validateRouteName)
-        ```
+    visit('/some/path').then(validateRouteName)
+    ```
 
-        @method currentRouteName
-        @return {Object} The name of the currently active route.
-      */
-      helper('currentRouteName', currentRouteName);
+    @method currentRouteName
+    @return {Object} The name of the currently active route.
+    */
+    helper('currentRouteName', currentRouteName);
 
-      /**
-        Returns the current path.
+    /**
+      Returns the current path.
 
-        Example:
+    Example:
 
-        ```javascript
-        function validateURL(){
-          equal(currentPath(), 'some.path.index', "correct path was transitioned into.");
-        }
+    ```javascript
+    function validateURL(){
+    equal(currentPath(), 'some.path.index', "correct path was transitioned into.");
+    }
 
-        click('#some-link-id').then(validateURL);
-        ```
+    click('#some-link-id').then(validateURL);
+    ```
 
-        @method currentPath
-        @return {Object} The currently active path.
-      */
-      helper('currentPath', currentPath);
+    @method currentPath
+    @return {Object} The currently active path.
+    */
+    helper('currentPath', currentPath);
 
-      /**
-        Returns the current URL.
+    /**
+      Returns the current URL.
 
-        Example:
+    Example:
 
-        ```javascript
-        function validateURL(){
-          equal(currentURL(), '/some/path', "correct URL was transitioned into.");
-        }
+    ```javascript
+    function validateURL(){
+    equal(currentURL(), '/some/path', "correct URL was transitioned into.");
+    }
 
-        click('#some-link-id').then(validateURL);
-        ```
+    click('#some-link-id').then(validateURL);
+    ```
 
-        @method currentURL
-        @return {Object} The currently active URL.
-      */
-      helper('currentURL', currentURL);
-    
+    @method currentURL
+    @return {Object} The currently active URL.
+    */
+    helper('currentURL', currentURL);
 
-    
-      /**
-        Triggers the given event on the element identified by the provided selector.
+    /**
+      Triggers the given event on the element identified by the provided selector.
 
-        Example:
+      Example:
 
-        ```javascript
-        triggerEvent('#some-elem-id', 'blur');
-        ```
+      ```javascript
+      triggerEvent('#some-elem-id', 'blur');
+      ```
 
-        This is actually used internally by the `keyEvent` helper like so:
+      This is actually used internally by the `keyEvent` helper like so:
 
-        ```javascript
-        triggerEvent('#some-elem-id', 'keypress', { keyCode: 13 });
-        ```
+      ```javascript
+      triggerEvent('#some-elem-id', 'keypress', { keyCode: 13 });
+      ```
 
-       @method triggerEvent
-       @param {String} selector jQuery selector for finding element on the DOM
-       @param {String} type The event type to be triggered.
-       @param {String} options The options to be passed to jQuery.Event.
-       @return {RSVP.Promise}
-      */
-      asyncHelper('triggerEvent', triggerEvent);
-    
+     @method triggerEvent
+     @param {String} selector jQuery selector for finding element on the DOM
+     @param {String} type The event type to be triggered.
+     @param {String} options The options to be passed to jQuery.Event.
+     @return {RSVP.Promise}
+    */
+    asyncHelper('triggerEvent', triggerEvent);
   });
 define("ember-testing/initializers", 
   ["ember-runtime/system/lazy_load"],
