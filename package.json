@@ -1,0 +1,19 @@
+{
+  "name": "world-builder",
+  "version": "0.0.0",
+  "description": "A graphical MUD builder",
+  "private": true,
+  "scripts": {},
+  "author": "Sean Copenhaver <sean.copenhaver@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+     "test": "node_modules/testem/testem.js ci"
+  },
+  "devDependencies": {
+    "express": "~3.4.7",
+    "express-namespace": "~0.1.1",
+    "connect-livereload": "~0.3.2",
+    "lockfile": "~0.4.2",
+    "testem": "~0.6.13"
+  }
+}

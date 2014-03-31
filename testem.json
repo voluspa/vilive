@@ -1,5 +1,7 @@
 {
     "src_files": [
+        "app/**/*.coffee",
+        "spec/**/*.coffee"
     ],
     "serve_files": [
         "vendor/jquery/dist/jquery.js",
@@ -11,6 +13,7 @@
         "vendor/ember-resolver/dist/ember-resolver.js",
         "vendor/threejs/build/three.js",
         "vendor/OrbitControls.js",
+        "_build/dev/**/*.js"
     ],
     "host": "127.0.0.1",
     "growl": true,
@@ -18,5 +21,5 @@
     "parallel": 4,
     "launch_in_dev": ["Chrome", "Firefox"],
     "launch_in_ci": ["Chrome", "Firefox", "Safari"],
-    "fail_on_zero_tests": true
+    "fail_on_zero_tests": false
 }
