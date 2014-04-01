@@ -1,0 +1,31 @@
+src_files:
+  - app/**/*.coffee
+  - spec/**/*.coffee
+
+serve_files:
+  - vendor/jquery/dist/jquery.js
+  - vendor/handlebars/handlebars.js
+  - vendor/ember/ember.js
+  - vendor/ember-data/ember-data.js
+  - vendor/ember-mocha-adapter/adapter.js
+  - vendor/ember-loader/loader.js
+  - vendor/ember-resolver/dist/ember-resolver.js
+  - vendor/threejs/build/three.js
+  - vendor/OrbitControls.js
+  - _build/dev/**/*.js
+
+launch_in_dev:
+  - Chrome
+  - Firefox
+  - Safari
+
+launch_in_ci:
+  - Chrome
+  - Firefox
+  - Safari
+
+host: 127.0.0.1
+growl: true
+framework: mocha+chai
+parallel: 4
+fail_on_zero_tests: false
