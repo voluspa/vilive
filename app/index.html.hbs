@@ -9,8 +9,9 @@
 
     <link rel="stylesheet" href="/vendor/bootswatch/flatly/bootstrap.css">
 
-    <!-- fileblock:css styles -->
-    <!-- endfileblock -->
+    {{#styles}}
+      <link rel="stylesheet" href="{{url_path}}">
+    {{/styles}}
 </head>
 <body>
 
@@ -34,8 +35,9 @@
     <script src="/vendor/threejs/build/three.js"></script>
     <script src="/vendor/OrbitControls.js"></script>
 
-    <!-- fileblock:js app -->
-    <!-- endfileblock -->
+    {{#scripts}}
+    <script src="{{url_path}}"></script>
+    {{/scripts}}
 
     <script>
         window.App = require('app/app')['default'].create();
