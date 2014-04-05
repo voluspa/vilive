@@ -14,6 +14,9 @@
     "express-namespace": "~0.1.1",
     "connect-livereload": "~0.3.2",
     "lockfile": "~0.4.2",
-    "testem": "~0.6.13"
+    "testem": "~0.6.13",
+    "es6-module-transpiler": "~0.4.0",
+    "shelljs": "~0.2.6",
+    "chalk": "~0.4.0"
   }
 }
