@@ -1,46 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>World Builder</title>
+  <head>
+    <title>Vilive</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="/vendor/bootswatch/flatly/bootstrap.css">
-
-    {{#styles}}
-      <link rel="stylesheet" href="{{url_path}}">
+    {{#styles}}<link rel="stylesheet" href="{{this}}">
     {{/styles}}
-</head>
-<body>
-
+  </head>
+  <body>
     <script>
-        //have to enable features before ember loads
-        ENV = {
-            FEATURES: {
-                'query-params-new': true
-            }
-        };
+    //have to enable features before ember loads
+    ENV = {
+      FEATURES: {
+        'query-params-new': true
+      }
+    };
     </script>
 
-    <!-- vendor libraries need to be manually added to testem config -->
-    <script src="/vendor/jquery/dist/jquery.js"></script>
-    <script src="/vendor/handlebars/handlebars.js"></script>
-    <script src="/vendor/ember/ember.js"></script>
-    <script src="/vendor/ember-data/ember-data.js"></script>
-    <script src="/vendor/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="/vendor/ember-loader/loader.js"></script>
-    <script src="/vendor/ember-resolver/dist/ember-resolver.js"></script>
-    <script src="/vendor/threejs/build/three.js"></script>
-    <script src="/vendor/OrbitControls.js"></script>
-
-    {{#scripts}}
-    <script src="{{url_path}}"></script>
+    {{#scripts}}<script src="{{this}}"></script>
     {{/scripts}}
 
     <script>
-        window.App = require('app/app')['default'].create();
+      window.App = require('app/app')['default'].create();
     </script>
-</body>
+  </body>
 </html>

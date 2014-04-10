@@ -127,9 +127,11 @@ async.parallel({
 }, function (err, files) {
   if (err) throw err;
 
-  Object.keys(files, function (key) {
-    context[key] = files[key];
-  });
+  var styles = files.dependencies.styles,
+      scripts = files.dependencies.scripts;
+
+  context.styles = styles.concat(files.styles);
+  context.scripts = scripts.concat(files.scripts);
 
   sh.mkdir('-p', buildDir);
 
