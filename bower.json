@@ -19,6 +19,12 @@
   "devDependencies": {
     "ember-mocha-adapter": "~0.2.0"
   },
+  "includes": [
+    "vendor/bootswatch/flatly/bootstrap.css",
+    "vendor/bootstrap/dist/js/bootstrap.js",
+    "vendor/threejs/threejs.js",
+    "vendor/OrbitControls/js"
+  ],
   "resolutions": {
     "ember": "canary"
   }
