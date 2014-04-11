@@ -1,5 +1,7 @@
 require('shelljs/make');
-var chalk = require('chalk');
+var chalk = require('chalk'),
+    path = require('path'),
+    buildDir = '_build';
 
 target.all = function() {
     console.log(chalk.green('running: all'));
@@ -14,8 +16,7 @@ target.clean = function() {
 
 target.traceur = function() {
     var tr = './node_modules/traceur/traceur',
-        options = '--modules=amd --dir app _build/traceur',
-        files = ' '; // file1 file2 file3
+        options = '--modules=amd --dir app ' + path.join(buildDir, 'traceur');
 
     console.log(chalk.green('running: traceur'));
     if (exec(tr + ' ' + options).code != 0) {
