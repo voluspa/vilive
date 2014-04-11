@@ -4,7 +4,7 @@ var chalk = require('chalk');
 target.all = function() {
     console.log(chalk.green('running: all'));
     target.clean();
-    target.es6();
+    target.traceur();
 };
 
 target.clean = function() {
@@ -12,18 +12,14 @@ target.clean = function() {
     rm('-rf', '_build/')
 }
 
-target.es6 = function() {
-    var transpiler = './node_modules/es6-module-transpiler/bin/compile-modules',
-        options = ' --to _build/es6 --type=amd --infer-name',
+target.traceur = function() {
+    var tr = './node_modules/traceur/traceur',
+        options = '--modules=amd --dir app _build/traceur',
         files = ' '; // file1 file2 file3
 
-    console.log(chalk.green('running: es6-module-transpiler'));
-    
-    find('app', 'spec').filter(function(file) { return file.match(/\.js$/); })
-                       .forEach(function(file) { files += ' ' + file });
-
-    if (exec(transpiler + files + options).code != 0) {
-        console.log(chalk.red('error: es6-module-transpiler failed'));    
+    console.log(chalk.green('running: traceur'));
+    if (exec(tr + ' ' + options).code != 0) {
+        console.log(chalk.red('error: traceur'));    
         exit(1);
     }
 };
