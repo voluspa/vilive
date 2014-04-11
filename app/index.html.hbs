@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vilive</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{#styles}}<link rel="stylesheet" href="{{this}}">
+    {{/styles}}
+  </head>
+  <body>
+    <script>
+    //have to enable features before ember loads
+    ENV = {
+      FEATURES: {
+        'query-params-new': true
+      }
+    };
+    </script>
+
+    {{#scripts}}<script src="{{this}}"></script>
+    {{/scripts}}
+
+    <script>
+      window.App = require('app/app')['default'].create();
+    </script>
+  </body>
+</html>
