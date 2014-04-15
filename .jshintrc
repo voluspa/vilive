@@ -1,0 +1,66 @@
+{
+  "predef": [
+    // some predefs from ember.js source
+    "define",
+    "console",
+    "Ember",
+    "DS",
+    "Handlebars",
+    "Metamorph",
+    "RSVP",
+    "require",
+    "requireModule",
+    "module",
+    "expect",
+
+    // A safe subset of "browser:true":
+    "window",
+    "location",
+    "document",
+    "XMLSerializer",
+    "setTimeout",
+    "clearTimeout",
+    "setInterval",
+    "clearInterval",
+    "requestAnimationFrame",
+
+    // Mochajs globals
+    "describe",
+    "it",
+    "before",
+    "after",
+    "beforeEach",
+    "afterEach",
+    "chai",
+
+    // three.js globals
+    "THREE",
+
+    // jquery
+    "$"
+  ],
+
+  "node" : false,
+  "browser" : false,
+
+  "esnext": true,
+  "boss" : false,
+  "curly": false,
+  "debug": false,
+  "devel": false,
+  "eqeqeq": true,
+  "evil": false,
+  "forin": false,
+  "immed": false,
+  "laxbreak": false,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "plusplus": false,
+  "undef": true,
+  "sub": true,
+  "strict": false,
+  "eqnull": true,
+  "trailing": true
+}

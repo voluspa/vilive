@@ -161,8 +161,8 @@ WorldRenderer.prototype = {
         for (var i = 0; i < intersects.length; i++) {
             intersector = intersects[i];
 
-            if (intersector.object != this.cube.shadow &&
-                intersector.object != this.axis) {
+            if (intersector.object !== this.cube.shadow &&
+                intersector.object !== this.axis) {
                 return intersector;
             }
         }
