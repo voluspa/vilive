@@ -14,8 +14,8 @@ var router = require('app/router')['default'].reopen({
 require('app/adapters/application')['default'] = DS.FixtureAdapter.extend({});
 
 window.App = require('app/app')['default'].create();
-App.setupForTesting();
-App.injectTestHelpers();
+window.App.setupForTesting();
+window.App.injectTestHelpers();
 
 window.expect = chai.expect;
 
@@ -24,5 +24,5 @@ function setFixtures(model, fixtures) {
 }
 
 function getStore() {
-    return App.__container__.lookup('store:main');
+    return window.App.__container__.lookup('store:main');
 }
