@@ -18,6 +18,8 @@
     "glob": "~3.2.9",
     "async": "~0.6.2",
     "shelljs": "~0.2.6",
-    "chalk": "~0.4.0"
+    "chalk": "~0.4.0",
+    "es6-module-transpiler": "~0.4.0",
+    "uglify-js": "~2.4.13"
   }
 }
