@@ -14,10 +14,11 @@
     "connect-livereload": "~0.3.2",
     "lockfile": "~0.4.2",
     "testem": "~0.6.13",
-    "handlebars": "~2.0.0-alpha.2",
+    "handlebars": "~1",
     "glob": "~3.2.9",
     "async": "~0.6.2",
     "shelljs": "~0.2.6",
-    "chalk": "~0.4.0"
+    "chalk": "~0.4.0",
+    "ember-template-compiler": "~1.5"
   }
 }
