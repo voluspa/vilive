@@ -11,8 +11,12 @@ COMPILE_MODULE?=node_modules/es6-module-transpiler/bin/compile-modules
 UGLIFYJS_OPTS?=--compress --mangle
 UGLIFYJS?=node_modules/uglify-js/bin/uglifyjs
 
+TESTEM?=node_modules/testem/testem.js
 
 default: _build lint _build/prod/app.min.js
+
+ci: default
+	$(TESTEM) ci
 
 _build/prod/app.min.js: $(APP_JS_DEV)
 	$(UGLIFYJS) $(APP_JS_DEV) $(UGLIFYJS_OPTS) --source-map $@.map --output $@

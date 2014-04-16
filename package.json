@@ -4,7 +4,7 @@
   "description": "A graphical MUD builder",
   "private": true,
   "scripts": {
-    "test": "node_modules/testem/testem.js ci"
+    "test": "make ci"
   },
   "author": "Sean Copenhaver <sean.copenhaver@gmail.com>",
   "license": "MIT",
