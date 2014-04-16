@@ -25,7 +25,7 @@ _build/dev/app/%.js: app/%.js
 	$(COMPILE_MODULE) $< --to _build/dev $(MODULE_OPTS)
 
 _build:
-	mkdir _build
+	mkdir -p _build/dev _build/prod
 
 lint:
 	$(JSHINT) .
