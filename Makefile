@@ -1,9 +1,12 @@
 SHELL=/bin/bash
 
+DEV_SCRIPT_DIR?=_build/dev/assets/scripts
+PROD_SCRIPT_DIR?=_build/prod/assets/scripts
+
 APP_JS_SRC:=$(shell find app -name "*.js" | xargs)
-APP_JS_DEV:=$(patsubst %.js, _build/dev/%.js, $(APP_JS_SRC))
+APP_JS_DEV:=$(patsubst %.js, $(DEV_SCRIPT_DIR)/%.js, $(APP_JS_SRC))
 SPEC_JS_SRC:=$(shell find spec -name "*.js" | xargs)
-SPEC_JS_DEV:=$(patsubst %.js, _build/dev/%.js, $(SPEC_JS_SRC))
+SPEC_JS_DEV:=$(patsubst %.js, $(DEV_SCRIPT_DIR)/%.js, $(SPEC_JS_SRC))
 
 JSHINT?=node_modules/jshint/bin/jshint
 
@@ -15,9 +18,13 @@ UGLIFYJS?=node_modules/uglify-js/bin/uglifyjs
 
 TESTEM?=node_modules/testem/testem.js
 
-default: _build lint _build/prod/app.min.js
+default: ci prod
 
-ci: default $(SPEC_JS_DEV)
+prod: lint _build $(PROD_SCRIPT_DIR)/app.min.js
+
+dev: lint _build $(APP_JS_DEV) $(SPEC_JS_DEV)
+
+ci: dev
 	$(TESTEM) ci
 
 lint:
@@ -27,15 +34,16 @@ clean:
 	rm -rf _build
 
 
-_build/prod/app.min.js: $(APP_JS_DEV)
+$(PROD_SCRIPT_DIR)/app.min.js: $(APP_JS_DEV)
 	$(UGLIFYJS) $(APP_JS_DEV) $(UGLIFYJS_OPTS) --source-map $@.map --output $@
 
-_build/dev/app/%.js: app/%.js
-	$(COMPILE_MODULE) $< --to _build/dev $(MODULE_OPTS)
+$(DEV_SCRIPT_DIR)/app/%.js: app/%.js
+	$(COMPILE_MODULE) $< --to $(DEV_SCRIPT_DIR) $(MODULE_OPTS)
 
-_build/dev/spec/%.js: spec/%.js
-	$(COMPILE_MODULE) $< --to _build/dev $(MODULE_OPTS)
+$(DEV_SCRIPT_DIR)/spec/%.js: spec/%.js
+	$(COMPILE_MODULE) $< --to $(DEV_SCRIPT_DIR) $(MODULE_OPTS)
 
 _build:
-	mkdir -p _build/dev _build/prod
+	mkdir -p $(DEV_SCRIPT_DIR)
+	mkdir -p $(PROD_SCRIPT_DIR)
 
