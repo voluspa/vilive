@@ -22,7 +22,7 @@ function buildTemplate(name, content) {
     return "define('" + name +"', ['exports'], function(__exports__){ __exports__['default'] = " + content + "; });"
 }
 
-glob(path.join(argv.input, "**.hbs"), function(er, files) {
+glob(path.join(argv.input, "**/*.hbs"), function(er, files) {
     var output  = [];
 
     files.forEach(function(f){
