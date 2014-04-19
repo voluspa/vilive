@@ -1,6 +1,6 @@
 src_files:
-  - app/**/*.coffee
-  - spec/**/*.coffee
+  - app/**/*.js
+  - spec/**/*.js
 
 serve_files:
   - vendor/jquery/dist/jquery.js

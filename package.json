@@ -4,7 +4,7 @@
   "description": "A graphical MUD builder",
   "private": true,
   "scripts": {
-    "test": "node_modules/testem/testem.js ci"
+    "test": "make ci"
   },
   "author": "Sean Copenhaver <sean.copenhaver@gmail.com>",
   "license": "MIT",
@@ -21,5 +21,8 @@
     "chalk": "~0.4.0",
     "ember-template-compiler": "~1",
     "yargs": "~1"
+    "es6-module-transpiler": "~0.4.0",
+    "uglify-js": "~2.4.13",
+    "jshint": "~2.5.0"
   }
 }
