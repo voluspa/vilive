@@ -19,6 +19,7 @@
     "async": "~0.6.2",
     "shelljs": "~0.2.6",
     "chalk": "~0.4.0",
-    "ember-template-compiler": "~1.5"
+    "ember-template-compiler": "~1",
+    "yargs": "~1"
   }
 }
