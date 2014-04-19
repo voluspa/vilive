@@ -22,21 +22,19 @@ function buildTemplate(name, content) {
     return "define('" + name +"', ['exports'], function(__exports__){ __exports__['default'] = " + content + "; });"
 }
 
-glob(path.join(argv.input, "**/*.hbs"), function(er, files) {
-    var output  = [];
+function processFile(f) {
+    var body = fs.readFileSync(f, 'utf8'),
+    name = f.replace(/\.hbs/, ''),
+    template;
 
-    files.forEach(function(f){
-        var body = fs.readFileSync(f, 'utf8'),
-            name = f.replace(/\.hbs/, ''),
-            template;
+    template = compiler.precompile(body).toString();
 
-        template = compiler.precompile(body).toString();
+    console.log(chalk.green('compiling: ' + f));
+    return buildTemplate(name, template);
+}
 
-        output.push(buildTemplate(name, template));
-        console.log(chalk.green('compiling: ' + f));
-    });
-
-    fs.writeFile(argv.output, output.join('\n'), function(err){
+function writeFile(contents) {
+    fs.writeFile(argv.output, contents, function(err){
         if (err) {
             console.log(chalk.red(err));
         }
@@ -44,4 +42,16 @@ glob(path.join(argv.input, "**/*.hbs"), function(er, files) {
             console.log(chalk.green('finished'));
         }
     }); 
-});
+}
+
+if (fs.statSync(argv.input).isDirectory()) {
+    glob(path.join(argv.input, "**/*.hbs"), function(er, files) {
+        var output  = [];
+        files.forEach(function(f) {
+            output.push(processFile(f));
+        });
+        writeFile(output.join('\n'));
+    });
+} else {
+    writeFile(processFile(argv.input));    
+}
