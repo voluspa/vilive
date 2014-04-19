@@ -19,7 +19,7 @@ var fs = require('fs'),
             
 
 function buildTemplate(name, content) {
-    return "define('" + name +"', ['exports'], function(__exports__){ __exports__['default'] = " + content + "; });"
+    return "define('" + name +"', ['exports'], function(__exports__){ __exports__['default'] = " + content + "; });";
 }
 
 function processFile(f) {
