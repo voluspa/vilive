@@ -16,8 +16,8 @@ var fs = require('fs'),
             alias: 'output'
         })
         .argv;
-            
-            
+
+
 
 function buildTemplate(name, content) {
     return "define('" + name +"', ['exports'], function(__exports__){ __exports__['default'] = " + content + "; });";
