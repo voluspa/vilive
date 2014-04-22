@@ -51,8 +51,8 @@ app.namespace('/api', function () {
 });
 
 app.use(static_file({ urlRoot: '/vendor', directory: 'vendor' }));
-app.use(static_file({ urlRoot: '/assets', directory: '_build/assets' }));
-app.use(static_file({ urlRoot: '/', file: '_build/index.html' }));
+app.use(static_file({ urlRoot: '/_build', directory: '_build' }));
+app.use(static_file({ urlRoot: '/', file: '_build/dev/index.html' }));
 
 app.listen(port);
 console.log('started on ' + port);
