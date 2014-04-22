@@ -41,10 +41,10 @@ clean:
 $(PROD_SCRIPT_DIR)/app.min.js: $(TEMPLATES_DEV) $(APP_JS_DEV)
 	$(UGLIFYJS) $(TEMPLATES_DEV) $(APP_JS_DEV) $(UGLIFYJS_OPTS) --source-map $@.map --output $@
 
-_build/prod/index.html: app/index.html.hbs
+_build/prod/index.html: app/index.html.hbs bower.json tools/generate-index-page.js
 	node tools/generate-index-page.js prod
 
-_build/dev/index.html: app/index.html.hbs
+_build/dev/index.html: app/index.html.hbs bower.json tools/generate-index-page.js
 	node tools/generate-index-page.js dev
 
 $(DEV_SCRIPT_DIR)/app/templates/%.js: app/templates/%.hbs
