@@ -20,7 +20,7 @@ var fs = require('fs'),
 
 
 function buildTemplate(name, content) {
-    return "define('" + name +"', ['exports'], function(__exports__){ __exports__['default'] = " + content + "; });";
+    return "define(\"" + name +"\", [\"exports\"], function(__exports__){ __exports__[\"default\"] = Ember.Handlebars.template(" + content + "); });";
 }
 
 function processFile(f) {
@@ -28,7 +28,7 @@ function processFile(f) {
     name = path.join(path.dirname(path.normalize(f)), path.basename(f, path.extname(f))),
     template;
 
-    template = compiler.precompile(body).toString();
+    template = compiler.precompile(body, true).toString();
 
     console.log(chalk.green('compiling: ' + f));
     return buildTemplate(name, template);
