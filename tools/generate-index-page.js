@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* jshint node: true */
 var path = require('path'),
     fs = require('fs');
@@ -72,7 +73,7 @@ function getDependencyIncludes(dependencies, callback) {
             },
             function (err, results) {
               if (results) {
-                results = [getCustomBowerIncludes()].concat(results);
+                results = results.concat([getCustomBowerIncludes()]);
                 results = results.reduce(flatten);
               }
               callback(err, results);
