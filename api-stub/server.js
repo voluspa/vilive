@@ -2,16 +2,17 @@
 "use strict";
 var express = require('express'),
     fs = require('fs'),
-    path = require('path'),
-    lockFile = require('lockfile');
+    path = require('path');
+
+var livereload = require('better-livereload');
+var server = livereload.createServer();
+server.watch(path.join(__dirname, '..', '_build', 'dev'));
 
 //have to load this before creating the app
 require('express-namespace');
 
 var port = process.env.port || 3000;
-
 var app = express();
-app.use(lock);
 app.use(express.compress());
 app.use(express.json());
 app.use(express.urlencoded());
@@ -58,15 +59,6 @@ app.listen(port);
 console.log('started on ' + port);
 
 // taken from ember-app-kit
-
-// https://github.com/stefanpenner/ember-app-kit/blob/53e434f0d6619f544bc92de4e85de398d4fc3c36/tasks/express-server.js#L78
-function lock(req, res, next) { 
-(function retry() {
-  if (lockFile.checkSync('.connect.lock')) {
-    setTimeout(retry, 30);
-  } else { next(); }
-})();
-}
 
 // https://github.com/stefanpenner/ember-app-kit/blob/53e434f0d6619f544bc92de4e85de398d4fc3c36/tasks/express-server.js#L86
 function static_file(options) {
