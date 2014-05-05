@@ -49,6 +49,12 @@ ci: dev
 lint:
 	$(JSHINT) .
 
+server:
+	node api-stub/server.js
+
+watch:
+	./node_modules/nodemon/bin/nodemon.js -w app -w spec -e hbs,js,less -x make dev 
+
 clean:
 	rm -rf _build
 
