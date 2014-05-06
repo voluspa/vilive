@@ -17,14 +17,11 @@ serve_files:
 launch_in_dev:
   - Chrome
   - Firefox
-  - Safari
 
 launch_in_ci:
   - Chrome
   - Firefox
-  - Safari
 
-host: 127.0.0.1
 growl: true
 framework: mocha+chai
 parallel: 4

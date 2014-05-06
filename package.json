@@ -24,6 +24,9 @@
     "uglify-js": "~2.4.13",
     "jshint": "~2.5.0",
     "less": "~1.7.0",
-    "better-livereload": "~0.3.1"
+    "better-livereload": "~0.3.1",
+    "cucumber": "~0.4.0",
+    "webdriverjs": "~1.6.1",
+    "selenium-standalone": "~2.41.0-2.9.0"
   }
 }
