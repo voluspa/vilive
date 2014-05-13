@@ -9,12 +9,14 @@ Router.map(function() {
    *
    * this.route('worldChooser', { path: '/world' }); */
 
-  this.resource('world', { path: '/world/:name' }, function() {
-    this.resource('room', { path: '/room/:id' }, function() {
-      this.route('new');
-      this.route('edit');
-      this.resource('exit', { path: '/exit/:direction' }, function() {
-        this.route('new');
+  // edit/exit
+  this.resource('world', { path: 'world/:world_name' }, function() {
+    this.resource('room', function() {
+      this.route('new', { path: 'new' });
+      this.route('edit', { path: '/:room_id' });
+      this.resource('exit', { path: '/:room_id/exit/' }, function() {
+        this.route('exit', { path: '/:exit_id/new' });
+        this.route('edit', { path: '/:exit_id' });  
       });
     });
   });
