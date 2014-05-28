@@ -15,12 +15,4 @@ Room.EXITS = [
   'west'
 ];
 
-Room.reopenClass({
-  FIXTURES: [
-    { id: 1, title: 'test description', exits: [1, 2] },
-
-    { id: 2, title: 'test description', exits: [3, 4] }
-  ]
-});
-
 export default Room;

@@ -15,7 +15,7 @@ Router.map(function() {
       this.route('new', { path: 'new' });
       this.route('edit', { path: '/:room_id' });
       this.resource('exit', { path: '/:room_id/exit/' }, function() {
-        this.route('exit', { path: '/:exit_id/new' });
+        this.route('new', { path: '/:exit_id/new' });
         this.route('edit', { path: '/:exit_id' });  
       });
     });

@@ -21,34 +21,26 @@ app.use(require("connect-livereload")());
 
 // api stubs
 app.namespace('/api', function () {
-    var nextId = 1;
-    var rooms = [];
-
-    app.get('/rooms', function (req, res) {
-        res.send({
-            rooms: rooms
-        });
-    });
-
-    app.get('/rooms/:id', function (req, res) {
-        var room = rooms.filter(function (r) {
-            return r.id === req.params.id;
-        })[0];
-
-        res.send({
-            room: room
-        });
-    });
-
-    app.post('/rooms', function (req, res) {
-        var room = req.body.room;
-        room.id = nextId++;
-
-        rooms.push(room);
-        res.send({
-            room: room
-        });
-    });
+  registerResource(app, 'world', [ 
+    {
+      "name": "test",
+      "rooms": ["1", "2"],
+      "id": 1
+    } 
+  ]);
+  registerResource(app, 'room', [
+    {
+      "title": "troom",
+      "description": "yet another",
+      "id": 1
+    },  
+    {
+      "title": "broom",
+      "description": "yeah",
+      "id": 2
+    }
+  ]);
+  registerResource(app, 'exit', []);
 });
 
 app.use(static_file({ urlRoot: '/vendor', directory: 'vendor' }));
@@ -91,4 +83,41 @@ function static_file(options) {
       });
     });
   };
+}
+
+function registerResource(app, resource, data) {
+    var nextId = 1,
+        plural = resource + 's';
+
+    app.get('/' + plural, function (req, res) {
+        var r = {};
+        r[plural] = data;
+
+        console.log('Sending (get all): ' + JSON.stringify(r));
+        res.send(r);
+    });
+
+    app.get('/' + plural + '/:id', function (req, res) {
+        var r = {};
+        
+        r[resource] = data.filter(function (p) {
+            return p.id === parseInt(req.params.id);
+        })[0];
+
+        console.log('Sending (get with id): ' + JSON.stringify(r));
+
+        res.send(r);
+    });
+
+    app.post('/' + plural, function (req, res) {
+        var e = req.body[resource],
+            r = {};
+        
+        console.log('Posted: ' + JSON.stringify(e));
+        e.id = (nextId++).toString();
+        data.push(e);
+
+        r[resource] = e;
+        res.send(r);
+    });
 }
