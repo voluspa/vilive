@@ -4,6 +4,8 @@ var express = require('express'),
     fs = require('fs'),
     path = require('path');
 
+process.on('uncaughtException', console.error);
+
 var livereload = require('better-livereload');
 var server = livereload.createServer();
 server.watch(path.join(__dirname, '..', '_build', 'dev'));
