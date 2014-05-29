@@ -57,23 +57,24 @@ specs: dev
 ci: specs
 	tools/run-cukes.js
 
-selenium:
-	node ./node_modules/selenium-standalone/bin/start-selenium
-
-server:
-	node ./api-stub/server.js
-
 lint:
 	$(JSHINT) .
 
-server:
-	node api-stub/server.js
-
-watch:
-	./node_modules/nodemon/bin/nodemon.js -w app -w spec -e hbs,js,less -x make dev 
-
 clean:
 	rm -rf _build
+
+
+env:
+	./tools/vilive.tmux
+
+selenium:
+	node ./node_modules/selenium-standalone/bin/start-selenium
+
+server-api:
+	node ./api-stub/server.js
+
+watch:
+	./node_modules/nodemon/bin/nodemon.js -w app -w spec -e hbs,js,less -x make dev
 
 
 $(PROD_SCRIPT_DIR)/app.min.js: $(TEMPLATES_DEV) $(APP_JS_DEV)
