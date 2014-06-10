@@ -15,6 +15,8 @@ if [ $EXISTS != 0 ] ; then
     tmux new-session -s $SESS -n editor -d
 
     tmux send-keys -t $SESS:1 'vim' C-m
+    tmux split-window -h -p 35 -t $SESS:1
+    tmux send-keys -t $SESS:1.2 'make watch' C-m
 
     tmux new-window -t $SESS:2 -n servers -d
     # so the number of file descriptors that testem is juggling
@@ -25,10 +27,6 @@ if [ $EXISTS != 0 ] ; then
 
     tmux split-window -h -p 40 -t $SESS:2
     tmux send-keys -t $SESS:2.2 'make server-api' C-m
-
-    tmux split-window -v -p 40 -t $SESS:2.2
-    #tmux send-keys -t $SESS:2.3 'ulimit -n 10000' C-m
-    tmux send-keys -t $SESS:2.3 'make watch' C-m
 
     tmux select-window -t $SESS:2
     tmux select-pane -t 1
