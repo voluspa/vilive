@@ -132,8 +132,19 @@ async.parallel({
   var styles = files.dependencies.styles,
       scripts = files.dependencies.scripts;
 
-  context.styles = styles.concat(files.styles);
-  context.scripts = scripts.concat(files.scripts);
+  context.styles = styles.concat(files.styles)
+                         .map(function (file) {
+                           //all files are served from root and not relative to the page
+                           //so we need to add a / in front
+                           return path.join('/', file);
+                         });
+
+  context.scripts = scripts.concat(files.scripts)
+                           .map(function (file) {
+                             //all files are served from root and not relative to the page
+                             //so we need to add a / in front
+                             return path.join('/', file);
+                           });
 
   sh.mkdir('-p', buildDir);
 
