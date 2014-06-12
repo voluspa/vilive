@@ -13,6 +13,9 @@
     "module",
     "expect",
 
+    // ember testing helpers
+    "visit",
+
     // A safe subset of "browser:true":
     "window",
     "location",
