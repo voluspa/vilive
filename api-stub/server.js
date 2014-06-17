@@ -19,23 +19,21 @@ app.use(express.compress());
 app.use(express.json());
 app.use(express.urlencoded());
 
-app.use(require("connect-livereload")());
-
 // api stubs
 app.namespace('/api', function () {
-  registerResource(app, 'world', [ 
+  registerResource(app, 'world', [
     {
       "name": "test",
       "rooms": ["1", "2"],
       "id": 1
-    } 
+    }
   ]);
   registerResource(app, 'room', [
     {
       "title": "troom",
       "description": "yet another",
       "id": 1
-    },  
+    },
     {
       "title": "broom",
       "description": "yeah",
@@ -101,7 +99,7 @@ function registerResource(app, resource, data) {
 
     app.get('/' + plural + '/:id', function (req, res) {
         var r = {};
-        
+
         r[resource] = data.filter(function (p) {
             return p.id === parseInt(req.params.id);
         })[0];
@@ -114,7 +112,7 @@ function registerResource(app, resource, data) {
     app.post('/' + plural, function (req, res) {
         var e = req.body[resource],
             r = {};
-        
+
         console.log('Posted: ' + JSON.stringify(e));
         e.id = (nextId++).toString();
         data.push(e);

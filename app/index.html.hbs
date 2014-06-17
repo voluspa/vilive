@@ -9,6 +9,11 @@
 
     {{#if test}}
       <link rel="stylesheet" href="/testem/mocha.css">
+      <style>
+        .ember-view {
+          display: none;
+        }
+      </style>
     {{/if}}
 
     {{#styles}}<link rel="stylesheet" href="{{this}}">
@@ -28,6 +33,7 @@
       <script src="/testem/mocha.js"></script>
       <script src="/testem/chai.js"></script>
       <script src="/testem.js"></script>
+      <script src="http://localhost:35729/livereload.js"></script>
     {{/if}}
 
     {{#scripts}}<script src="{{this}}"></script>
