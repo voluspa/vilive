@@ -1,7 +1,6 @@
 Ember.Test.adapter = Ember.Test.MochaAdapter.create();
 
 var router = require('app/router')['default'].reopen({
-    rootURL: '',
     location: 'none'
 });
 
