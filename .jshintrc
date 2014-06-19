@@ -1,5 +1,7 @@
 {
   "predef": [
+    "App",
+
     // some predefs from ember.js source
     "define",
     "console",
@@ -15,6 +17,15 @@
 
     // ember testing helpers
     "visit",
+    "fillIn",
+    "click",
+    "keyEvent",
+    "triggerEvent",
+    "find",
+    "currentPath",
+    "currentRouteName",
+    "currentURL",
+    "andThen",
 
     // A safe subset of "browser:true":
     "window",

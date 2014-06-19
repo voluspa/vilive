@@ -83,7 +83,11 @@ $(PROD_SCRIPT_DIR)/app.min.js: $(TEMPLATES_DEV) $(APP_JS_DEV)
 $(PROD_STYLE_DIR)/application.css: $(STYLES_SRC)
 	$(LESSC) $(LESSC_OPTS) -x app/styles/application.less $@
 
-_build/prod/index.html: $(APP_JS_SRC) $(STYLES_JS_SRC) app/index.html.hbs bower.json tools/generate-index-page.js
+_build/prod/index.html: $(APP_JS_SRC) \
+												$(STYLES_JS_SRC) \
+												app/index.html.hbs \
+												bower.json \
+												tools/generate-index-page.js
 	node tools/generate-index-page.js prod
 
 
@@ -99,7 +103,12 @@ $(DEV_SCRIPT_DIR)/spec/%.js: spec/%.js
 $(DEV_STYLE_DIR)/application.css: $(STYLES_SRC)
 	$(LESSC) $(LESSC_OPTS) app/styles/application.less $@
 
-_build/dev/index.html: $(APP_JS_SRC) $(STYLES_JS_SRC) app/index.html.hbs bower.json tools/generate-index-page.js
+_build/dev/index.html: $(TEMPLATES_DEV) \
+												$(APP_JS_SRC) \
+												$(STYLES_JS_SRC) \
+												app/index.html.hbs \
+												bower.json \
+												tools/generate-index-page.js
 	node tools/generate-index-page.js dev
 
 
