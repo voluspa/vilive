@@ -7,6 +7,15 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    {{#if test}}
+      <link rel="stylesheet" href="/testem/mocha.css">
+      <style>
+        .ember-view {
+          display: none;
+        }
+      </style>
+    {{/if}}
+
     {{#styles}}<link rel="stylesheet" href="{{this}}">
     {{/styles}}
   </head>
@@ -20,11 +29,32 @@
     };
     </script>
 
+    {{#if test}}
+      <script src="/testem/mocha.js"></script>
+      <script src="/testem/chai.js"></script>
+      <script src="/testem.js"></script>
+      <script src="http://localhost:35729/livereload.js"></script>
+    {{/if}}
+
     {{#scripts}}<script src="{{this}}"></script>
     {{/scripts}}
 
-    <script>
-      window.App = require('app/app')['default'].create();
-    </script>
+    {{#if test}}
+      <script>mocha.setup('bdd')</script>
+      <div id="mocha"></div>
+      <script>
+        //load all test modules
+        require('spec/init');
+        Object.keys(require.entries)
+              .filter(function (key) { return key.match(/^spec/); })
+              .forEach(function (spec) { require(spec); });
+
+        mocha.run()
+      </script>
+    {{else}}
+      <script>
+        window.App = require('app/app')['default'].create();
+      </script>
+    {{/if}}
   </body>
 </html>

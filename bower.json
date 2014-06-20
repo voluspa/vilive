@@ -20,7 +20,7 @@
     "vendor/ember-resolver/dist/ember-resolver.js",
     "vendor/bootswatch/flatly/bootstrap.css",
     "vendor/bootstrap/dist/js/bootstrap.js",
-    "vendor/threejs/three.js",
+    "vendor/threejs/build/three.js",
     "vendor/OrbitControls.js"
   ],
   "devDependencies": {

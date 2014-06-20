@@ -20,10 +20,9 @@ function loadJson(file) {
 
 function getProjectDependencies(includeDevDeps) {
   var bower = require('../bower');
+  var deps = Object.keys(bower.dependencies || { });
 
-  var deps = Object.keys(bower.dependencies) || [];
-
-  if (includeDevDeps) deps.concat(bower.devDependencies || []);
+  if (includeDevDeps) deps = deps.concat(Object.keys(bower.devDependencies || { }));
 
   return deps;
 }
@@ -104,11 +103,13 @@ var template = fs.readFileSync('app/index.html.hbs', 'utf8'),
 
 var env = process.argv[2] || 'dev',
     buildDir = path.join('_build', env),
-    outFile = path.join(buildDir, 'index.html');
+    outFile = path.join(buildDir, 'index.html'),
+    testRunner = path.join(buildDir, 'test_runner.html');
 
 
 var context = {
-  env: env
+  env: env,
+  test: false
 };
 
 
@@ -149,7 +150,12 @@ async.parallel({
   sh.mkdir('-p', buildDir);
 
   var html = render(context);
-
   fs.writeFileSync(outFile, html);
+
+  //simple hack to generate a test runner for the dev environment
+  if (env !== 'dev') return;
+  context.test = true;
+  html = render(context);
+  fs.writeFileSync(testRunner, html);
 });
 

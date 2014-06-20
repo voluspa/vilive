@@ -12,7 +12,6 @@
     "async": "~0.6.2",
     "better-livereload": "~0.3.1",
     "chalk": "~0.4.0",
-    "connect-livereload": "~0.3.2",
     "cucumber": "~0.4.0",
     "ember-template-compiler": "~1",
     "es6-module-transpiler": "~0.4.0",
