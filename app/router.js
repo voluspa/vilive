@@ -9,8 +9,10 @@ Router.map(function() {
    *
    * this.route('worldChooser', { path: '/world' }); */
 
-  // edit/exit
+  this.route('login');
+
   this.resource('world', { path: 'world/:world_name' }, function() {
+    /*
     this.resource('room', function() {
       this.route('new', { path: 'new' });
       this.route('edit', { path: '/:room_id' });
@@ -19,6 +21,7 @@ Router.map(function() {
         this.route('edit', { path: '/:exit_id' });
       });
     });
+   */
   });
 });
 
