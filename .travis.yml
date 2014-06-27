@@ -6,7 +6,5 @@ before_install:
     - sh -e /etc/init.d/xvfb start
     - npm install --production -g bower
     - bower install
-    - npm install --production -g selenium-standalone@latest
-    - start-selenium &
 addons:
   firefox: "29.0"

@@ -1,6 +1,5 @@
 /*jshint expr: true */
 describe('user login', function () {
-
   beforeEach(function () {
     visit('login');
   });
@@ -25,5 +24,4 @@ describe('user login', function () {
       expect(find('.password', 'form.login').val()).to.be.empty;
     });
   });
-
 });

@@ -4,7 +4,7 @@
   "description": "A graphical MUD builder",
   "private": true,
   "scripts": {
-    "test": "make ci"
+    "test": "make specs"
   },
   "author": "Sean Copenhaver <sean.copenhaver@gmail.com>",
   "license": "MIT",
@@ -12,7 +12,6 @@
     "async": "~0.6.2",
     "better-livereload": "~0.3.1",
     "chalk": "~0.4.0",
-    "cucumber": "~0.4.0",
     "ember-template-compiler": "~1",
     "es6-module-transpiler": "~0.4.0",
     "express": "~3.4.7",
@@ -22,11 +21,9 @@
     "jshint": "~2.5.0",
     "less": "~1.7.0",
     "nodemon": "^1.0.20",
-    "selenium-standalone": "~2.41.0-2.9.0",
     "shelljs": "~0.2.6",
     "testem": "~0.6.13",
     "uglify-js": "~2.4.13",
-    "webdriverjs": "~1.6.1",
     "yargs": "~1"
   }
 }
