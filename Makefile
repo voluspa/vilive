@@ -65,7 +65,7 @@ server-api:
 	node ./api-stub/server.js
 
 watch:
-	./node_modules/nodemon/bin/nodemon.js -w app -w spec -e hbs,js,less -x make dev
+	./node_modules/nodemon/bin/nodemon.js -w bower.json -w app -w spec -e hbs,js,json,less -x make dev
 
 
 $(PROD_SCRIPT_DIR)/app.min.js: $(TEMPLATES_DEV) $(APP_JS_DEV)

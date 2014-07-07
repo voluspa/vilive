@@ -1,4 +1,7 @@
 /*jshint expr: true */
+
+import { defineFixture } from "app/lib/ajax";
+
 describe('user login', function () {
   beforeEach(function () {
     visit('login');
@@ -14,6 +17,11 @@ describe('user login', function () {
     expect(form.hidden).to.not.be.ok;
   });
 
+  it('no validation errors appear when visiting /login', function () {
+    expect(find('.error-message', 'form.login').text()).to.be.empty;
+    expect(find('.alert', 'form.login').text()).to.be.empty;
+  });
+
   it('clears fields when leaving and coming back', function () {
     fillIn('form.login .username', 'ralph');
     fillIn('form.login .password', 'ninja Skillz');
@@ -22,6 +30,60 @@ describe('user login', function () {
     andThen(function () {
       expect(find('.username', 'form.login').val()).to.be.empty;
       expect(find('.password', 'form.login').val()).to.be.empty;
+      expect(find('.error-message', 'form.login').text()).to.be.empty;
+      expect(find('.alert', 'form.login').text()).to.be.empty;
+    });
+  });
+
+  it('requires a username to be entered', function () {
+    fillIn('form.login .password', 'ninja Skillz');
+    click('form.login .submit');
+    andThen(function () {
+      var errMsg = find('.username.error-message', 'form.login');
+      expect(errMsg.text()).to.not.be.empty;
+    });
+  });
+
+  it('clears the username error when the user types in the username input', function () {
+    click('form.login .submit');
+    fillIn('form.login .username', 'ralph');
+    andThen(function () {
+      var errMsg = find('.username.error-message', 'form.login');
+      expect(errMsg.text()).to.be.empty;
+    });
+  });
+
+  it('requires a password to be entered', function () {
+    fillIn('form.login .username', 'ralph');
+    click('form.login .submit');
+    andThen(function () {
+      var errMsg = find('.password.error-message', 'form.login');
+      expect(errMsg.text()).to.not.be.empty;
+    });
+  });
+
+  it('clears the password error when the user types in the password input', function () {
+    click('form.login .submit');
+    fillIn('form.login .password', 'ninja Skillz');
+    andThen(function () {
+      var errMsg = find('.password.error-message', 'form.login');
+      expect(errMsg.text()).to.be.empty;
+    });
+  });
+
+  it('displays an error if the server returns one', function () {
+    defineFixture('/api/login', {
+      response: null,
+      textStatus: 'error',
+      jqXHR: { responseJSON: { error: "Username/Password is invalid" } }
+    });
+
+    fillIn('form.login .username', 'login-error-user');
+    fillIn('form.login .password', 'login-error-user');
+    click('form.login .submit');
+    andThen(function () {
+      var errMsg = find('.alert', 'form.login');
+      expect(errMsg.text()).to.not.be.empty;
     });
   });
 });

@@ -21,6 +21,11 @@ app.use(express.urlencoded());
 
 // api stubs
 app.namespace('/api', function () {
+  app.post('login', function (req, res) {
+    res.status(401)
+       .send({ error: "Username/Password was invalid" });
+  });
+
   registerResource(app, 'world', [
     {
       "name": "test",
@@ -45,7 +50,6 @@ app.namespace('/api', function () {
 
 app.use(static_file({ urlRoot: '/vendor', directory: 'vendor' }));
 app.use(static_file({ urlRoot: '/_build', directory: '_build' }));
-app.use(static_file({ urlRoot: '/', directory: '_build/dev' }));
 app.use(static_file({ urlRoot: '/', file: '_build/dev/index.html' }));
 
 app.listen(port);
