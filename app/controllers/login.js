@@ -55,7 +55,8 @@ export default Ember.Controller.extend({
           data: creds
       }).then(
         function onSuccess(data) {
-          console.log(data);
+          self.set('session', data.response);
+          self.transitionToRoute('worlds');
         },
         function onError(data) {
           self.set('errors.login', [data.jqXHR.responseJSON.error]);

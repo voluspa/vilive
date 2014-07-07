@@ -22,6 +22,14 @@ app.use(express.urlencoded());
 // api stubs
 app.namespace('/api', function () {
   app.post('login', function (req, res) {
+    if (req.param('username') === 'login-success-user') {
+      return res.status(200)
+                .send({
+                  username: 'login-success-user',
+                  token: '1234567890'
+                });
+    }
+
     res.status(401)
        .send({ error: "Username/Password was invalid" });
   });

@@ -1,6 +1,7 @@
 /*jshint expr: true */
 
-import { defineFixture } from "app/lib/ajax";
+import { defineFixture as defineAjaxFixture } from "app/lib/ajax";
+import loginFixture from "spec/fixtures/login/success";
 
 describe('user login', function () {
   beforeEach(function () {
@@ -72,7 +73,7 @@ describe('user login', function () {
   });
 
   it('displays an error if the server returns one', function () {
-    defineFixture('/api/login', {
+    defineAjaxFixture('/api/login', {
       response: null,
       textStatus: 'error',
       jqXHR: { responseJSON: { error: "Username/Password is invalid" } }
@@ -84,6 +85,21 @@ describe('user login', function () {
     andThen(function () {
       var errMsg = find('.alert', 'form.login');
       expect(errMsg.text()).to.not.be.empty;
+    });
+  });
+
+  it("redirects to /worlds on success when there isn't a stored transition", function () {
+    defineAjaxFixture('/api/login', {
+      response: loginFixture,
+      textStatus: 'success',
+      jqXHR: { }
+    });
+
+    fillIn('form.login .username', 'login-success-user');
+    fillIn('form.login .password', 'login-success-user');
+    click('form.login .submit');
+    andThen(function () {
+      expect(currentRouteName()).to.be.eql('worlds');
     });
   });
 });

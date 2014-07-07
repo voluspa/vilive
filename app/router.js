@@ -11,6 +11,7 @@ Router.map(function() {
 
   this.route('login');
 
+  this.route('worlds');
   this.resource('world', { path: 'world/:world_name' }, function() {
     /*
     this.resource('room', function() {

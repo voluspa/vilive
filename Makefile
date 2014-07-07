@@ -62,7 +62,7 @@ selenium:
 	node ./node_modules/selenium-standalone/bin/start-selenium
 
 server-api:
-	node ./api-stub/server.js
+	./node_modules/nodemon/bin/nodemon.js ./api-stub/server.js -w ./api-stub
 
 watch:
 	./node_modules/nodemon/bin/nodemon.js -w bower.json -w app -w spec -e hbs,js,json,less -x make dev
