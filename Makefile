@@ -36,26 +36,17 @@ UGLIFYJS_OPTS?=--compress --mangle
 
 TESTEM?=node_modules/testem/testem.js
 
-CUKE?=node_modules/cucumber/bin/cucumber.js
-CUKE_OPTS?=-f pretty
 
+.PHONY: specs
 
-.PHONY: features specs
-
-default: dev prod ci
+default: dev prod specs
 
 prod: lint _build $(PROD_SCRIPT_DIR)/app.min.js $(PROD_STYLE_DIR)/application.css _build/prod/index.html
 
 dev: lint _build $(APP_JS_DEV) $(TEMPLATES_DEV) $(DEV_STYLE_DIR)/application.css $(SPEC_JS_DEV) _build/dev/index.html
 
-features: dev
-	$(CUKE) $(CUKE_OPTS)
-
 specs: dev
 	$(TESTEM) ci
-
-ci: specs
-	tools/run-cukes.js
 
 lint:
 	$(JSHINT) .
@@ -71,10 +62,10 @@ selenium:
 	node ./node_modules/selenium-standalone/bin/start-selenium
 
 server-api:
-	node ./api-stub/server.js
+	./node_modules/nodemon/bin/nodemon.js ./api-stub/server.js -w ./api-stub
 
 watch:
-	./node_modules/nodemon/bin/nodemon.js -w app -w spec -e hbs,js,less -x make dev
+	./node_modules/nodemon/bin/nodemon.js -w bower.json -w app -w spec -e hbs,js,json,less -x make dev
 
 
 $(PROD_SCRIPT_DIR)/app.min.js: $(TEMPLATES_DEV) $(APP_JS_DEV)

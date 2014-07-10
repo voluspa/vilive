@@ -109,7 +109,8 @@ var env = process.argv[2] || 'dev',
 
 var context = {
   env: env,
-  test: false
+  test: false,
+  livereload: env === 'dev'
 };
 
 

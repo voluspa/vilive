@@ -10,9 +10,9 @@
   "dependencies": {
     "jquery": "2.1.0",
     "handlebars": "1.3.0",
+    "ember-loader": "git://github.com/stefanpenner/loader.js.git#master",
     "ember": "canary",
     "ember-resolver": "git://github.com/stefanpenner/ember-jj-abrams-resolver.git#master",
-    "ember-loader": "git://github.com/stefanpenner/loader.js.git#master",
     "ember-data": "1.0.0-beta.7",
     "bootswatch": "3.1.1"
   },
