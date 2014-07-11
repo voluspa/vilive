@@ -1,3 +1,5 @@
+import DS from 'ember-data';
+
 // copied from first.stab
 var Room = DS.Model.extend({
   title: DS.attr('string'),

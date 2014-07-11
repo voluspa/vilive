@@ -1,4 +1,5 @@
-import ajax from 'app/lib/ajax';
+import Ember from 'ember';
+import ajax from 'ic-ajax';
 
 export default Ember.Controller.extend({
   errors: Ember.Object.create(),
@@ -40,7 +41,9 @@ export default Ember.Controller.extend({
 
   actions: {
     login: function () {
-      if (!this.isValid()) return;
+      if (!this.isValid()) {
+        return;
+      }
 
       var self = this,
           creds = this.getProperties('username', 'password');

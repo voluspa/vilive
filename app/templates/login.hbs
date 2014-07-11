@@ -1,6 +1,6 @@
 <form class="login" action="POST" {{action "login" on="submit"}}>
   {{#each errors.login}}
-  <div class="login alert alert-danger">{{this}}</div>
+  <div class="login error-message alert alert-danger">{{this}}</div>
   {{/each}}
   <div {{bind-attr class=":form-group errors.username:has-error"}}>
     {{input value=username class="username form-control" placeholder="Username"}}

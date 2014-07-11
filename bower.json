@@ -1,32 +1,18 @@
 {
   "name": "vilive",
-  "version": "0.0.0",
-  "authors": [
-    "Sean Copenhaver <sean.copenhaver@gmail.com>"
-  ],
-  "description": "Graphic web based MUD builder and client",
-  "license": "MIT",
-  "private": true,
   "dependencies": {
-    "jquery": "2.1.0",
-    "handlebars": "1.3.0",
-    "ember-loader": "git://github.com/stefanpenner/loader.js.git#master",
-    "ember": "canary",
-    "ember-resolver": "git://github.com/stefanpenner/ember-jj-abrams-resolver.git#master",
-    "ember-data": "1.0.0-beta.7",
+    "handlebars": "~1.3.0",
+    "jquery": "^1.11.1",
+    "qunit": "~1.12.0",
+    "ember-qunit": "~0.1.5",
+    "ember": "1.5.1",
+    "ember-resolver": "~0.1.1",
+    "loader": "stefanpenner/loader.js#1.0.0",
+    "ember-cli-shims": "stefanpenner/ember-cli-shims#0.0.2",
+    "ember-load-initializers": "stefanpenner/ember-load-initializers#0.0.2",
+    "ember-qunit-notifications": "^0.0.3",
+    "ember-cli-test-loader": "rjackson/ember-cli-test-loader#0.0.2",
+    "ic-ajax": "~2.0.1",
     "bootswatch": "3.1.1"
-  },
-  "includes": [
-    "vendor/ember-resolver/dist/ember-resolver.js",
-    "vendor/bootswatch/flatly/bootstrap.css",
-    "vendor/bootstrap/dist/js/bootstrap.js",
-    "vendor/threejs/build/three.js",
-    "vendor/OrbitControls.js"
-  ],
-  "devDependencies": {
-    "ember-mocha-adapter": "~0.2.0"
-  },
-  "resolutions": {
-    "ember": "canary"
   }
 }

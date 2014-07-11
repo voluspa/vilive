@@ -1,38 +1,32 @@
 {
-  "name": "world-builder",
+  "name": "vilive",
   "version": "0.0.0",
-  "description": "A graphical MUD builder",
   "private": true,
-  "scripts": {
-    "test": "make specs"
+  "directories": {
+    "doc": "doc",
+    "test": "test"
   },
-  "author": "Sean Copenhaver <sean.copenhaver@gmail.com>",
+  "scripts": {
+    "start": "ember server",
+    "build": "ember build",
+    "test": "ember test"
+  },
+  "repository": "https://github.com/voluspa/vilive",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "author": "Voluspa Team",
   "license": "MIT",
   "devDependencies": {
-    "async": "~0.6.2",
-    "better-livereload": "~0.3.1",
-    "chalk": "~0.4.0",
-    "ember-template-compiler": "~1",
-    "es6-module-transpiler": "~0.4.0",
-    "express": "~3.4.7",
-    "express-namespace": "~0.1.1",
-    "glob": "~3.2.9",
-    "handlebars": "~1",
-    "jshint": "~2.5.0",
-    "less": "~1.7.0",
-    "nodemon": "^1.0.20",
-    "shelljs": "~0.2.6",
-    "testem": "~0.6.13",
-    "uglify-js": "~2.4.13",
-    "yargs": "~1"
-  },
-  "dependencies": {
-    "async": "^0.6.2",
-    "chalk": "^0.4.0",
-    "es6-module-transpiler": "^0.4.0",
-    "express": "^3.4.8",
-    "glob": "^3.2.11",
-    "handlebars": "^1.3.0",
-    "shelljs": "^0.2.6"
+    "body-parser": "^1.2.0",
+    "broccoli-asset-rev": "0.0.11",
+    "broccoli-ember-hbs-template-compiler": "^1.5.0",
+    "broccoli-less-single": "^0.1.4",
+    "ember-cli": "0.0.39",
+    "ember-cli-ember-data": "0.1.0",
+    "ember-cli-ic-ajax": "0.1.1",
+    "express": "^4.1.1",
+    "glob": "^3.2.9",
+    "originate": "0.1.5"
   }
 }
