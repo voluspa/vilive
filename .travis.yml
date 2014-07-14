@@ -7,6 +7,6 @@ before_install:
   - npm install --production -g bower
   - bower install
 before_script:
-  - ember server
+  - ember server &
 addons:
   firefox: "30.0"
