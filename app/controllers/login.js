@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import ajax from 'ic-ajax';
+import ajax from '../lib/ajax';
 
 export default Ember.Controller.extend({
   errors: Ember.Object.create(),
@@ -50,7 +50,6 @@ export default Ember.Controller.extend({
 
       this.set('errors.login', []);
 
-      console.log(ajax);
 
       ajax({
           method: 'POST',

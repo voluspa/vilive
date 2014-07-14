@@ -6,6 +6,7 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     EmberENV: {
+      serverUrl: '',
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
@@ -18,6 +19,7 @@ module.exports = function(environment) {
     }
   };
 
+
   if (environment === 'development') {
     // LOG_MODULE_RESOLVER is needed for pre-1.6.0
     ENV.LOG_MODULE_RESOLVER = true;
@@ -28,6 +30,11 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     ENV.APP.LOG_VIEW_LOOKUPS = true;
+
+    //we override the host for ajax calls and enable CORS support
+    //in the ember server. this allows the ember test command to
+    //run tests that hit ember server enabling tests to hit the api stub
+    ENV.EmberENV.serverUrl = 'http://localhost:4200';
   }
 
   if (environment === 'production') {
