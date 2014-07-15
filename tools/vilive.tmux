@@ -16,11 +16,7 @@ if [ $EXISTS != 0 ] ; then
 
     tmux send-keys -t $SESS:1 'vim' C-m
     tmux split-window -h -p 35 -t $SESS:1
-    # so the number of file descriptors that testem is juggling
-    # to auto reload things can blow out the default setting
-    # which can cause some issues and testem crashing sometimes
-    tmux send-keys -t $SESS:1.2 'ulimit -n 10000' C-m
-    tmux send-keys -t $SESS:1.2 'ember server' C-m
+    tmux send-keys -t $SESS:1.2 'make server' C-m
 
     tmux select-window -t $SESS:1
     echo "'$SESS' created"
