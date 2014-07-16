@@ -1,11 +1,12 @@
-import Room from 'app/models/room';
+import Ember from 'ember';
+import Room from 'vilive/models/room';
 
 function WorldRenderer() {
     var self = this;
 
     //need some measurements to start off with
     var width = window.innerWidth,
-        height = window.innerHeight - $('header').outerHeight(true);
+        height = window.innerHeight - Ember.$('header').outerHeight(true);
 
     this.renderer = new THREE.WebGLRenderer();
     this.scene = new THREE.Scene();
@@ -99,14 +100,19 @@ WorldRenderer.prototype = {
     _snapToGrid: function (x) {
         var n = x;
         //negate it so the offset and floor work as expected
-        if (x < 0) n = -n;
+        if (x < 0) {
+          n = -n;
+        }
 
         //grid is cenetered on origin so we have to offset 
         //the coordinate first before snapping to grid
         n = n + (this.gridStepSize / 2);
         var grid =  Math.floor(n / this.gridStepSize) * this.gridStepSize;
 
-        if(x < 0) return -grid;
+        if(x < 0) {
+          return -grid;
+        }
+
         return grid;
     },
 
@@ -114,9 +120,7 @@ WorldRenderer.prototype = {
         if (!intersector.object) return;
         if (!intersector.face || !intersector.face.normal) return;
 
-        var gridStepSize = this.gridStepSize,
-            cubeSize = this.cubeSize,
-            matrixWorld = intersector.object.matrixWorld;
+        var matrixWorld = intersector.object.matrixWorld;
 
         this.normalMatrix.getNormalMatrix(matrixWorld);
 
@@ -211,7 +215,7 @@ WorldRenderer.prototype = {
         }
     },
 
-    _render: function(timestamp) {
+    _render: function() {
         if (!this.isLocationLocked()) {
             this._updateRollovers();
         }
