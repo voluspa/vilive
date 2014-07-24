@@ -7,6 +7,8 @@ before_install:
   - npm install --production -g bower
   - bower install
 before_script:
-  - ember server &
+  - ember server --environment test &
+after_script:
+  - make report-cover
 addons:
   firefox: "30.0"

@@ -41,7 +41,21 @@
     <script src="assets/qunit-notifications.js"></script>
     <script src="assets/vendor.js"></script>
     <script src="assets/vilive.js"></script>
+    <!-- HACK: override the modules if we have instrumented one -->
+    <script src="assets/vilive.instrumented.js"></script>
     <script src="testem.js"></script>
+    <script>
+      (function () {
+        if (!window.Testem) return;
+        Testem.on('all-test-results', function(){
+            if (!window.__coverage__) return;
+            var xhr = new XMLHttpRequest();
+            //must be sync' so we finish before testem kills us in CI mode
+            xhr.open('POST', 'http://localhost:4200/api/__coverage', false);
+            xhr.send(JSON.stringify(window.__coverage__));
+        });
+      })();
+    </script>
     <script>
       require('vilive/tests/test-helper');
     </script>

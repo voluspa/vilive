@@ -7,9 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "start": "ember server",
-    "build": "ember build",
-    "test": "ember test"
+    "start": "make server",
+    "build": "make",
+    "test": "make ci"
   },
   "repository": "https://github.com/voluspa/vilive",
   "engines": {
@@ -23,11 +23,14 @@
     "broccoli-ember-hbs-template-compiler": "^1.5.0",
     "broccoli-less-single": "^0.1.4",
     "cors": "^2.4.1",
+    "coveralls": "^2.11.1",
     "ember-cli": "0.0.39",
     "ember-cli-ember-data": "0.1.0",
     "ember-cli-ic-ajax": "0.1.1",
     "express": "^4.1.1",
     "glob": "^3.2.9",
-    "originate": "0.1.5"
+    "istanbul": "^0.3.0",
+    "originate": "0.1.5",
+    "testem": "^0.6.17"
   }
 }
