@@ -1,4 +1,7 @@
 # Vilive
+[![Build Status](https://travis-ci.org/voluspa/vilive.svg)](https://travis-ci.org/voluspa/vilive.svg)
+[![Coverage Status](https://img.shields.io/coveralls/voluspa/vilive.svg)](https://coveralls.io/r/voluspa/vilive)
+
 
 This README outlines the details of collaborating on this Ember application.
 

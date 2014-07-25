@@ -1,8 +1,13 @@
-/* global require, module */
-
+/* global process, require, module */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
-var app = new EmberApp();
+var isTest = process.env.EMBER_ENV === 'test';
+
+var emberOptions = {
+  wrapInEval: !isTest
+};
+
+var app = new EmberApp(emberOptions);
 
 // Use `app.import` to add additional libraries to the generated
 // output files.
