@@ -1,5 +1,5 @@
 # Vilive
-[![Build Status](https://travis-ci.org/voluspa/vilive.svg)](https://travis-ci.org/voluspa/vilive.svg)
+[![Build Status](https://travis-ci.org/voluspa/vilive.svg)](https://travis-ci.org/voluspa/vilive)
 [![Coverage Status](https://img.shields.io/coveralls/voluspa/vilive.svg)](https://coveralls.io/r/voluspa/vilive)
 
 
