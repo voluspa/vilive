@@ -10,6 +10,6 @@ before_script:
   - ember server --environment test &
   - sleep 10
 after_script:
-  - make report-cover
+  - make cover-post
 addons:
   firefox: "30.0"
