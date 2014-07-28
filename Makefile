@@ -21,8 +21,10 @@ ci:
 	cd dist; ../$(TESTEM) ci -f ../testem.json
 	$(ISTANBUL) check-coverage
 
-report-cover:
+cover-report:
 	$(ISTANBUL) report
+
+cover-post: cover-report
 	cat ./coverage/lcov.info | $(COVERALLS)
 
 clean:
