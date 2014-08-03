@@ -30,6 +30,7 @@
     "express": "^4.1.1",
     "glob": "^3.2.9",
     "istanbul": "^0.3.0",
+    "nodemon": "^1.2.1",
     "originate": "0.1.5",
     "testem": "^0.6.17"
   }
