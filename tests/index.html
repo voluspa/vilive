@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/vilive.css">
-    <link rel="stylesheet" href="assets/qunit.css">
+    <link rel="stylesheet" href="assets/test-support.css">
     <style>
       #ember-testing-container {
         position: absolute;
@@ -37,9 +37,8 @@
       window.ViliveENV = {{ENV}};
       window.EmberENV = window.ViliveENV.EmberENV;
     </script>
-    <script src="assets/qunit.js"></script>
-    <script src="assets/qunit-notifications.js"></script>
     <script src="assets/vendor.js"></script>
+    <script src="assets/test-support.js"></script>
     <script src="assets/vilive.js"></script>
     <!-- HACK: override the modules if we have instrumented one -->
     <script src="assets/vilive.instrumented.js"></script>
@@ -47,12 +46,12 @@
     <script>
       (function () {
         if (!window.Testem) return;
-        Testem.on('all-test-results', function(){
-            if (!window.__coverage__) return;
-            var xhr = new XMLHttpRequest();
-            //must be sync' so we finish before testem kills us in CI mode
-            xhr.open('POST', 'http://localhost:4200/api/__coverage', false);
-            xhr.send(JSON.stringify(window.__coverage__));
+        Testem.on('all-test-results', function () {
+          if (!window.__coverage__) return;
+          var xhr = new XMLHttpRequest();
+          //must be sync' so we finish before testem kills us in CI mode
+          xhr.open('POST', 'http://localhost:4200/api/__coverage', false);
+          xhr.send(JSON.stringify(window.__coverage__));
         });
       })();
     </script>
