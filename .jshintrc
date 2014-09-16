@@ -2,9 +2,8 @@
   "predef": {
     "document": true,
     "window": true,
-    "ViliveENV": true,
-    "requestAnimationFrame": true,
-    "THREE": true
+    "-Promise": true,
+    "ViliveENV": true
   },
   "browser" : true,
   "boss" : true,

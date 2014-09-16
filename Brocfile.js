@@ -1,4 +1,5 @@
 /* global process, require, module */
+
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 var isTest = process.env.EMBER_ENV === 'test';
@@ -22,13 +23,10 @@ var app = new EmberApp(emberOptions);
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 
-app.import('vendor/bootswatch/flatly/bootstrap.css');
-app.import('vendor/bootstrap/dist/js/bootstrap.js');
+app.import('bower_components/bootswatch/flatly/bootstrap.css');
+app.import('bower_components/bootstrap/dist/js/bootstrap.js');
 
-app.import('vendor/threejs/build/three.js');
-app.import('vendor/OrbitControls.js');
-
-app.import('vendor/ic-ajax/dist/named-amd/main.js', {
+app.import('bower_components/ic-ajax/dist/named-amd/main.js', {
   exports: {
     'ic-ajax': [
       'default',
