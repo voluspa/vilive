@@ -3,24 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Vilive</title>
+    <title>Hello Yggdrasil!</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {{BASE_TAG}}
+    {{content-for "head"}}
 
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/vilive.css">
+
+    {{content-for "head-footer"}}
   </head>
   <body>
-    <script>
-      window.ViliveENV = {{ENV}};
-      window.EmberENV = window.ViliveENV.EmberENV;
-    </script>
+    {{content-for "body"}}
+
     <script src="assets/vendor.js"></script>
     <script src="assets/vilive.js"></script>
-    <script>
-      window.Vilive = require('vilive/app')['default'].create(ViliveENV.APP);
-    </script>
+
+    {{content-for "body-footer"}}
   </body>
 </html>

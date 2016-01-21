@@ -1,0 +1,25 @@
+<nav class="navbar navbar-inverse" style="border-radius:0px;">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+                            data-toggle="collapse" data-target="#menu-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      {{ link-to 'Vilive' 'index' class="navbar-brand" }}
+    </div>
+
+    <div class="collapse navbar-collapse" id="menu-collapse">
+      <ul class="nav navbar-nav pull-right">
+        {{#if session.isAuthenticated}}
+          <li><a {{action 'logout'}} class="btn btn-link">Logout</a></li>
+        {{else}}
+          <li><a {{action 'login'}} class="btn btn-link">Login</a></li>
+          <li><a {{action 'register'}} class="btn btn-link">register</a></li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
+</nav>
