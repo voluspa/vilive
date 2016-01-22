@@ -1,12 +1,4 @@
-<header class="navbar navbar-default navbar-collapse navbar-statictop" role="banner">
-  <div class="container">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">Builder</a>
-    </div>
-    <nav role="navigation">
-      <ul class="nav navbar navbar-right">
-      </ul>
-    </nav>
-  </div>
-</header>
-{{outlet}}
+{{main-nav onLogin='transitionToLoginRoute' onRegister='transitionToRegisterRoute'}}
+<div class="container">
+  {{outlet}}
+</div>

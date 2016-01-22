@@ -1,0 +1,11 @@
+{{#if errors}}
+  <div class="alert alert-danger">
+    <ul>
+      {{#each errors as |error|}}
+        <li class="upcase-first">
+          {{error.source.pointer}} {{error.detail}}
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}

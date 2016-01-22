@@ -1,13 +1,94 @@
+@import "bootstrap";
+@import "theme";
 
-form.login {
-  max-width: 275px;
-  margin: auto;
+.upcase-first:first-letter {
+  text-transform:uppercase;
 }
 
-.error-message {
-  color: #e74c3c;
+.console .chat
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-.alert.error-message {
-  color: inherit;
+.console .chat li
+{
+    line-height: normal;
+    margin-bottom: 5px;
+}
+
+.console .chat li .chat-body p
+{
+    word-wrap: break-word;
+    color: white;
+    margin: 0;
+}
+
+.console .chat li .chat-body p.response
+{
+    color: cyan;
+    margin: 0;
+    padding-left: 5px;
+}
+
+.console .panel .slidedown .glyphicon, .chat .glyphicon
+{
+    margin-right: 5px;
+}
+
+.console .panel-heading
+{
+    padding-top: 3px;
+    height: 25px;
+}
+
+.console .panel-body
+{
+    background: black;
+    padding: 2px;
+    overflow-y: scroll;
+    height: 500px;
+}
+
+.console .chat-command
+{
+    margin-right: 12px;
+}
+
+.console .chat-command input
+{
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    background: black; 
+    color: white;
+    padding: 2px;
+}
+
+.console .chat-command .input-group-addon
+{
+    border: none;
+    border-radius: 0;
+    background: black; 
+    color: white;
+    padding: 2px;
+}
+
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
 }

@@ -2,14 +2,11 @@
 
 module.exports = function(environment) {
   var ENV = {
+    modulePrefix: 'vilive',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
     EmberENV: {
-      //we override the host for ajax calls and enable CORS support
-      //in the ember server. this allows the ember test command to
-      //run tests that hit ember server enabling tests to hit the api stub
-      serverUrl: 'http://localhost:4200',
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
@@ -22,20 +19,50 @@ module.exports = function(environment) {
     }
   };
 
+  ENV.yggdrasil = {
+    endpoint: 'http://localhost:4000',
+    socket: 'ws://localhost:4000',
+    loginPath: '/api/auth/login',
+    registerPath: '/api/auth/register'
+  }
+
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
-    ENV.APP.LOG_ACTIVE_GENERATION = true;
+    // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    ENV.APP.LOG_VIEW_LOOKUPS = true;
+    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.contentSecurityPolicy = {
+      'default-src': "'none'",
+      'script-src': "'self'",
+      'font-src': "'self'",
+      'connect-src': "'self' http://localhost:4000",
+      'img-src': "'self'",
+      'style-src': "'self'",
+      'media-src': "'self'"
+    };
   }
 
   if (environment === 'test') {
-    ENV.baseURL = '/'; // Testem prefers this...
+    // Testem prefers this...
+    ENV.baseURL = '/';
+    ENV.locationType = 'none';
+
+    // keep test console output quieter
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
+
+    ENV.APP.rootElement = '#ember-testing';
   }
 
   if (environment === 'production') {
-    ENV.EmberENV.serverUrl = '';
+
+  }
+
+  ENV['ember-simple-auth'] = {
+    authenticationRoute: 'login',
+    routeAfterAuthentication: 'client',
+    routeIfAlreadyAuthenticated: 'client'
   }
 
   return ENV;

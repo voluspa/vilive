@@ -1,13 +1,12 @@
 {
-  "predef": {
-    "document": true,
-    "window": true,
-    "-Promise": true,
-    "ViliveENV": true
-  },
-  "browser" : true,
-  "boss" : true,
-  "curly": false,
+  "predef": [
+    "document",
+    "window",
+    "-Promise"
+  ],
+  "browser": true,
+  "boss": true,
+  "curly": true,
   "debug": false,
   "devel": true,
   "eqeqeq": true,

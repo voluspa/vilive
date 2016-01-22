@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 console">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-comment"></span> Client
+        </div>
+        <div class="panel-body">
+          <ul class="chat">
+            {{#each messages as |msg|}}
+              <li class="clearfix">
+                <div class="chat-body clearfix">
+                  <p class="{{msg.cssClass}}">{{msg.text}}</p>
+                </div>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+        <div class="chat-command">
+          <div class="input-group">
+            <div class="input-group-addon">&gt;</div>
+            {{input id="command-input" type="text" class="form-control" placeholder="Type command and press enter..." value=command enter="sendCommand"}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
